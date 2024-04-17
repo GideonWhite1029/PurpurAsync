@@ -63,7 +63,7 @@ dependencies {
 }
 
 paperweight {
-    serverProject = project(":tentacles-server")
+    serverProject = project(":purpurasync-server")
 
     remapRepo = paperMavenPublicUrl
     decompileRepo = paperMavenPublicUrl
@@ -76,10 +76,10 @@ paperweight {
             baseName("Purpur")
 
             apiPatchDir = layout.projectDirectory.dir("patches/api")
-            apiOutputDir = layout.projectDirectory.dir("Tentacles-API")
+            apiOutputDir = layout.projectDirectory.dir("PurpurAsync-API")
 
             serverPatchDir = layout.projectDirectory.dir("patches/server")
-            serverOutputDir = layout.projectDirectory.dir("Tentacles-Server")
+            serverOutputDir = layout.projectDirectory.dir("PurpurAsync-Server")
         }
 
         patchTasks.register("generatedApi") {
@@ -92,7 +92,7 @@ paperweight {
 }
 
 tasks.generateDevelopmentBundle {
-    apiCoordinates = "org.purpurmc.tentacles:tentacles-api"
+    apiCoordinates = "dev.gideonwhite1029.purpurasync:purpurasync-api"
     mojangApiCoordinates = "io.papermc.paper:paper-mojangapi"
     libraryRepositories.set(
         listOf(
