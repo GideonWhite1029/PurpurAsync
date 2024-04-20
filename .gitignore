@@ -52,8 +52,4 @@ manifest.mf
 run/
 
 build-data/
-Tentacles-API
-Tentacles-MojangAPI
-Tentacles-Server
-paper-api-generator
 *.jar
