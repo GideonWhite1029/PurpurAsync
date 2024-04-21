@@ -32,6 +32,8 @@ jobs:
         uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
         with:
           arguments: createReobfPaperclipJar
+      - name: Get Release Info
+        run: sh scripts/ReleaseInfo.sh
       - name: Create Release
         if: "!contains(github.event.commits[0].message, '[release-skip]')"
         uses: ncipollo/release-action@v1.12.0
