@@ -15,13 +15,14 @@ mcversion=$(prop mcVersion)
 gradleVersion=$(prop version)
 preVersion=$(prop preVersion)
 tagid="$mcversion-$commitid"
-jarName="PurpurAsync-paperclip-$gradleVersion-reobf.jar"
+jarName="purpurasync-$mcVersion.jar"
 purpurasyncid="PurpurAsync-$commitid"
 releaseinfo="releaseinfo.md"
 make_latest=$([ $preVersion = "true" ] && echo "false" || echo "true")
 
 rm -f $releaseinfo
 
+mv build/libs/PurpurAsync-paperclip-$gradleVersion-reobf.jar $jarName
 echo "name=$purpurasyncid" >> $GITHUB_ENV
 echo "tag=$tagid" >> $GITHUB_ENV
 echo "jar=$jarName" >> $GITHUB_ENV
