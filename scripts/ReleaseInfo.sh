@@ -15,7 +15,7 @@ mcversion=$(prop mcVersion)
 gradleVersion=$(prop version)
 preVersion=$(prop preVersion)
 tagid="$mcversion-$commitid"
-jarName="purpurasync-$mcVersion.jar"
+jarName="purpurasync-$mcversion.jar"
 purpurasyncid="PurpurAsync-$commitid"
 releaseinfo="releaseinfo.md"
 make_latest=$([ $preVersion = "true" ] && echo "false" || echo "true")
