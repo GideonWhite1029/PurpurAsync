@@ -477,7 +477,7 @@ index 0000000000000000000000000000000000000000..bf68483928208ae48141c5fb723a2c3f
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/world/entity/ai/behavior/AcquirePoi.java b/src/main/java/net/minecraft/world/entity/ai/behavior/AcquirePoi.java
-index 6e65bc6bd198abf8c60016696d7851a1e8e080ec..7b6e3dc2bf5c88ea928d9230973a0cfa9d8e6445 100644
+index 6499e3fe49e453db11e51eaf717ca8b3b682056b..81417c968ab28789cba82bbc26b24ac284ad26a1 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/behavior/AcquirePoi.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/behavior/AcquirePoi.java
 @@ -1,6 +1,7 @@
@@ -714,7 +714,7 @@ index 2a7a26ca447cc78f24e61a2bf557411c31eb16b2..757d3b13ddbabb2cedfe6d4fa4d7ac35
      private boolean tryComputePath(Mob entity, WalkTarget walkTarget, long time) {
          BlockPos blockPos = walkTarget.getTarget().currentBlockPosition();
 diff --git a/src/main/java/net/minecraft/world/entity/ai/behavior/SetClosestHomeAsWalkTarget.java b/src/main/java/net/minecraft/world/entity/ai/behavior/SetClosestHomeAsWalkTarget.java
-index 80f98bf7742eac8bd9fb99b01bb91b3bc059abd0..8f46f5bf56d61f39a86755338f741657bf205985 100644
+index 6802e0c4d331c7125114dd86409f6a110465ab82..9ed67907fc2a4caee51357e9d9e1260d81f51ef3 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/behavior/SetClosestHomeAsWalkTarget.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/behavior/SetClosestHomeAsWalkTarget.java
 @@ -1,6 +1,7 @@
@@ -791,7 +791,7 @@ index 80f98bf7742eac8bd9fb99b01bb91b3bc059abd0..8f46f5bf56d61f39a86755338f741657
          );
      }
 diff --git a/src/main/java/net/minecraft/world/entity/ai/goal/DoorInteractGoal.java b/src/main/java/net/minecraft/world/entity/ai/goal/DoorInteractGoal.java
-index 8324cab1790b8a550abf17dc8be3be9d8b6ba081..e5481e47d959ec57f7e79091d567c1962fb0865a 100644
+index 74aca307b4ebffe4e33c4fca3e07c23ca87622ac..37e61aa259f573cc5b5844026af99f3c72945f34 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/goal/DoorInteractGoal.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/goal/DoorInteractGoal.java
 @@ -56,7 +56,7 @@ public abstract class DoorInteractGoal extends Goal {
@@ -908,7 +908,7 @@ index a3e0c5af4cc9323c02e88e768cbda9e46854aea1..7ddb315b3e49bcb8d624001addaf378e
          if (!this.isDone()) {
              if (this.canUpdatePath()) {
 diff --git a/src/main/java/net/minecraft/world/entity/ai/navigation/GroundPathNavigation.java b/src/main/java/net/minecraft/world/entity/ai/navigation/GroundPathNavigation.java
-index 8d433e354ecc91f823822a95224c9d2e2a59bbbd..947836eda6e89d468eb55d511d4962feb0f54f2e 100644
+index 74ae984ac41bcdd2cc45f1bec461cdc5f69977c6..a963d1a3109dc3c8db64341ade24245a93560c51 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/navigation/GroundPathNavigation.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/navigation/GroundPathNavigation.java
 @@ -1,5 +1,7 @@
@@ -957,7 +957,7 @@ index 8d433e354ecc91f823822a95224c9d2e2a59bbbd..947836eda6e89d468eb55d511d4962fe
  
      @Override
 diff --git a/src/main/java/net/minecraft/world/entity/ai/navigation/PathNavigation.java b/src/main/java/net/minecraft/world/entity/ai/navigation/PathNavigation.java
-index 8a6d716706bfcd551125ac1e69dfec6989196e82..cec53076a33754c092c515e2c4b76b670607260a 100644
+index e12cf130678bda7c1f5873cb03172a698e18fc85..0ccd80af518654525b369f557d8c11046c93cc0b 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/navigation/PathNavigation.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/navigation/PathNavigation.java
 @@ -5,6 +5,9 @@ import java.util.Set;
@@ -1012,7 +1012,7 @@ index 8a6d716706bfcd551125ac1e69dfec6989196e82..cec53076a33754c092c515e2c4b76b67
              // Paper end - EntityPathfindEvent
              //this.level.getProfiler().push("pathfind"); // Purpur
              BlockPos blockPos = useHeadPos ? this.mob.blockPosition().above() : this.mob.blockPosition();
--            int i = (int)(followRange + range);
+-            int i = (int)(followRange + (float)range);
 +            int i = (int) (followRange + range);
              PathNavigationRegion pathNavigationRegion = new PathNavigationRegion(this.level, blockPos.offset(-i, -i, -i), blockPos.offset(i, i, i));
              Path path = this.pathFinder.findPath(pathNavigationRegion, this.mob, positions, followRange, distance, this.maxVisitedNodesMultiplier);
@@ -1083,8 +1083,8 @@ index 8a6d716706bfcd551125ac1e69dfec6989196e82..cec53076a33754c092c515e2c4b76b67
 -        } else if (this.path != null && !this.path.isDone() && this.path.getNodeCount() != 0) {
 +        } else if (this.path != null && this.path.isProcessed() && !this.path.isDone() && this.path.getNodeCount() != 0) { // Kaiiju - petal - Skip if not processed
              Node node = this.path.getEndNode();
-             Vec3 vec3 = new Vec3((node.x + this.mob.getX()) / 2.0, (node.y + this.mob.getY()) / 2.0, (node.z + this.mob.getZ()) / 2.0);
-             return pos.closerToCenterThan(vec3, this.path.getNodeCount() - this.path.getNextNodeIndex());
+             Vec3 vec3 = new Vec3(((double)node.x + this.mob.getX()) / 2.0, ((double)node.y + this.mob.getY()) / 2.0, ((double)node.z + this.mob.getZ()) / 2.0);
+             return pos.closerToCenterThan(vec3, (double)(this.path.getNodeCount() - this.path.getNextNodeIndex()));
 diff --git a/src/main/java/net/minecraft/world/entity/ai/navigation/WaterBoundPathNavigation.java b/src/main/java/net/minecraft/world/entity/ai/navigation/WaterBoundPathNavigation.java
 index ce7398a617abe6e800c1e014b3ac5c970eb15c8a..cefe3ee69df4c30c9b064ef6a216a5bd79b93be5 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/navigation/WaterBoundPathNavigation.java
@@ -1136,7 +1136,7 @@ index ce7398a617abe6e800c1e014b3ac5c970eb15c8a..cefe3ee69df4c30c9b064ef6a216a5bd
  
      @Override
 diff --git a/src/main/java/net/minecraft/world/entity/ai/sensing/NearestBedSensor.java b/src/main/java/net/minecraft/world/entity/ai/sensing/NearestBedSensor.java
-index 3c8b9ef3f55f4511f062b03822c8056c40dd7c92..30593311a5a988e4ef44cf42407fcab1558135bc 100644
+index 9104d7010bda6f9f73b478c11490ef9c53f76da2..22b32ce7df01c16859fbb140ba779e9e833c2821 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/sensing/NearestBedSensor.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/sensing/NearestBedSensor.java
 @@ -2,12 +2,15 @@ package net.minecraft.world.entity.ai.sensing;
@@ -1393,7 +1393,7 @@ index bf7ef72a7d92db8f11789a69583270644de0dac7..fb40c0a031e3367b7b23fc6e16ed1e4e
          };
      }
 diff --git a/src/main/java/net/minecraft/world/level/pathfinder/Path.java b/src/main/java/net/minecraft/world/level/pathfinder/Path.java
-index 75ad467ddaa4b993c42d4e06692b824cd5f8b211..f80f54fdef76146735928f82427b6fc481166ee8 100644
+index d9d0fff9962131808d54cca20f209df50b8e4af1..f2f91b05cc8e1a2d05d44f209ff784b0dbd1b5e4 100644
 --- a/src/main/java/net/minecraft/world/level/pathfinder/Path.java
 +++ b/src/main/java/net/minecraft/world/level/pathfinder/Path.java
 @@ -27,6 +27,18 @@ public class Path {
@@ -1424,7 +1424,7 @@ index 75ad467ddaa4b993c42d4e06692b824cd5f8b211..f80f54fdef76146735928f82427b6fc4
              return false;
          } else if (o.nodes.size() != this.nodes.size()) {
 diff --git a/src/main/java/net/minecraft/world/level/pathfinder/PathFinder.java b/src/main/java/net/minecraft/world/level/pathfinder/PathFinder.java
-index 7bdcbfa4fcefb7d8230756a55b774e3834290e64..34b1c999424e1a316aa1a1ddd591cde191693732 100644
+index 2046ac397f5c46cc45f233e36abbdbe717753fc7..18dd4147a39f939f2132fe6a974c15e56a2275c2 100644
 --- a/src/main/java/net/minecraft/world/level/pathfinder/PathFinder.java
 +++ b/src/main/java/net/minecraft/world/level/pathfinder/PathFinder.java
 @@ -11,11 +11,16 @@ import java.util.Set;
