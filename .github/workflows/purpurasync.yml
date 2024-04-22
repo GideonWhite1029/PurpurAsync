@@ -6,51 +6,54 @@ on:
   pull_request:
     branches: [ "ver/1.20.4" ]
 
+permissions: write-all
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    environment: default
     steps:
-      - name: Get repository
-        uses: actions/checkout@v3
+      - name: Checkout Git Repository
+        uses: actions/checkout@v4
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
         with:
-          fetch-depth: 0
-      - name: Get JDK 17
-        uses: actions/setup-java@v3
+          gradle-version: 8.5
+      - name: Set up JDK
+        uses: actions/setup-java@v4
         with:
-          java-version: '17'
           distribution: 'temurin'
+          java-version: '17'
       - name: Setup Git Config
-        run: |
-          git config --global user.email "action@github.com"
-          git config --global user.name "Github Action"
+        run: git config --global user.email "action@github.com" && git config --global user.name "Github Action"
       - name: Apply Patches
-        uses: gradle/gradle-build-action@v3
-        with:
-          arguments: applyPatches
-      - name: Create Paperclip Jar
-        uses: gradle/gradle-build-action@v3
-        with:
-          arguments: createReobfPaperclipJar
+        run: gradle applyPatches
+      - name: CreateJar
+        run: gradle createReobfBundlerJar createReobfPaperclipJar
       - name: Get Release Info
         run: sh scripts/ReleaseInfo.sh
+      - name: Upload Artifact
+        uses: "actions/upload-artifact@v4"
+        with:
+          name: "${{ env.project_id_b }} CI Artifacts"
+          path: "build/libs/*.jar"
       - name: Create Release
-        if: "!contains(github.event.commits[0].message, '[release-skip]')"
+        if: "!contains(github.event.commits[0].message, '[release skip]')"
         uses: ncipollo/release-action@v1.14.0
         with:
-          artifacts: ${{ env.jar }}
-          bodyFile: ${{ env.info }}
           tag: ${{ env.tag }}
-          name: ${{ env.name }}
+          name: ${{ env.project_id_b }} ${{ env.mcversion }} - ${{ env.commit_id }}
+          body: |
+            📦Version: `${{ env.mcversion }}` | Commit ${{ env.commit_id }} [![download](https://img.shields.io/github/downloads/GideonWhite1029/${{ env.project_id }}/${{ env.tag }}/total?color=0&style=flat-square)](https://github.com/GideonWhite1029/${{ env.project_id }}/download/${{ env.tag }}/${{ env.jar }})
+            This release is automatically compiled by GitHub Actions
+            ### Commit Message
+            ${{ env.commit_msg }}
+          artifacts: |
+            ${{ env.jar_dir }}
+            build/libs/${{ env.project_id }}-${{ env.mcversion }}-bundler.jar
+          generateReleaseNotes: true
           prerelease: ${{ env.pre }}
-          token: ${{ secrets.GITHUB_TOKEN }}
           makeLatest: ${{ env.make_latest }}
-      - name: Delete Draft Releases
-        uses: hugo19941994/delete-draft-releases@v1.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.jar }}
-          path: ${{ env.jar }}
+          token: "${{ secrets.GITHUB_TOKEN }}"
