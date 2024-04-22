@@ -106,10 +106,8 @@ tasks.generateDevelopmentBundle {
 allprojects {
     publishing {
         repositories {
-            maven("https://repo.purpurmc.org/snapshots") {
-                name = "tentacles"
-                credentials(PasswordCredentials::class)
-            }
+            mavenCentral()
+            maven("https://jitpack.io")
         }
     }
 }
