@@ -15,7 +15,7 @@ if (!file(".git").exists()) {
     val errorText = """
         
         =====================[ ERROR ]=====================
-         The Tentacles project directory is not a properly cloned Git repository.
+         The PurpurAsync project directory is not a properly cloned Git repository.
          
          In order to build PurpurAsync from source you must clone
          the repository using Git, not download a code zip from GitHub.
