@@ -1,0 +1,32 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: GideonWhite1029 <gideonwhite1029@gmail.com>
+Date: Wed, 1 May 2024 18:56:10 +0400
+Subject: [PATCH] Information changed during startup
+
+
+diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
+index 53ce0fb2dac9c22680ab934f535b5a2037139445..e41c03da08a18476d6b34c0c8d3816e7d90833c4 100644
+--- a/src/main/java/org/bukkit/Bukkit.java
++++ b/src/main/java/org/bukkit/Bukkit.java
+@@ -125,7 +125,20 @@ public final class Bukkit {
+         if ("master".equals(gitBranch) || "main".equals(gitBranch)) {
+             branchMsg = "";  // Don't show branch on main/master
+         }
+-        return "This server is running " + getName() + " version " + getVersion() + " (Implementing API version " + getBukkitVersion() + ") (Git: " + gitCommit + branchMsg + ")";
++        // PurpurAsync start
++        return "\n" +
++                "\u001B[38;5;123m      ___                         ___                    \n" +
++                "\u001B[38;5;122m     / _ \\__ _________  __ ______/ _ | ___ __ _____  ____\n" +
++                "\u001B[38;5;121m    / ___/ // / __/ _ \\/ // / __/ __ |(_-</ // / _ \\/ __/\n" +
++                "\u001B[38;5;120m   /_/   \\_,_/_/ / .__/\\_,_/_/ /_/ |_/___/\\_, /_//_/\\__/ \n" +
++                "\u001B[38;5;119m                /_/                      /___/           \u001B[0m\n" +
++                "\n" +
++                "  \u001b[38;5;86m Server name: \u001B[0m" + getName() + "\n" +
++                "  \u001b[38;5;86m Version: \u001B[0m" + getVersion() + "\n" +
++                "  \u001b[38;5;86m API version: \u001B[0m" + getBukkitVersion() + "\n" +
++                "  \u001b[38;5;86m Github commit: \u001B[0m" + gitCommit + "\n";
++
++        // PurpurAsync stop
+         // Paper end
+     }
+ 
