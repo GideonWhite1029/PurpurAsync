@@ -5,89 +5,22 @@ Subject: [PATCH] Leaf: Faster Natural Spawning
 
 
 diff --git a/src/main/java/net/minecraft/util/RandomSource.java b/src/main/java/net/minecraft/util/RandomSource.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..1ccd1833f422b6e99ccc6dd8610fcf9a001fb754
---- /dev/null
+index 9c6f5b55b1f1376fa75e216cd366ee47c79fafc4..1ccd1833f422b6e99ccc6dd8610fcf9a001fb754 100644
+--- a/src/main/java/net/minecraft/util/RandomSource.java
 +++ b/src/main/java/net/minecraft/util/RandomSource.java
-@@ -0,0 +1,78 @@
-+package net.minecraft.util;
-+
-+import io.netty.util.internal.ThreadLocalRandom;
-+import net.minecraft.world.level.levelgen.LegacyRandomSource;
-+import net.minecraft.world.level.levelgen.PositionalRandomFactory;
-+import net.minecraft.world.level.levelgen.RandomSupport;
-+import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
-+import net.minecraft.world.level.levelgen.ThreadSafeLegacyRandomSource;
-+
-+public interface RandomSource {
-+    @Deprecated
-+    double GAUSSIAN_SPREAD_FACTOR = 2.297;
-+
-+    static RandomSource create() {
-+        return create(RandomSupport.generateUniqueSeed());
-+    }
-+
+@@ -15,6 +15,12 @@ public interface RandomSource {
+         return create(RandomSupport.generateUniqueSeed());
+     }
+ 
 +    // PurpurAsync start - Generate random seed faster
 +    static RandomSource createFaster() {
 +        return create(RandomSupport.generateFasterSeed());
 +    }
 +    // PurpurAsync end
 +
-+    @Deprecated
-+    static RandomSource createThreadSafe() {
-+        return new ThreadSafeLegacyRandomSource(RandomSupport.generateUniqueSeed());
-+    }
-+
-+    static RandomSource create(long seed) {
-+        return new LegacyRandomSource(seed);
-+    }
-+
-+    static RandomSource createNewThreadLocalInstance() {
-+        return new SingleThreadedRandomSource(ThreadLocalRandom.current().nextLong());
-+    }
-+
-+    RandomSource fork();
-+
-+    PositionalRandomFactory forkPositional();
-+
-+    void setSeed(long seed);
-+
-+    int nextInt();
-+
-+    int nextInt(int bound);
-+
-+    default int nextIntBetweenInclusive(int min, int max) {
-+        return this.nextInt(max - min + 1) + min;
-+    }
-+
-+    long nextLong();
-+
-+    boolean nextBoolean();
-+
-+    float nextFloat();
-+
-+    double nextDouble();
-+
-+    double nextGaussian();
-+
-+    default double triangle(double mode, double deviation) {
-+        return mode + deviation * (this.nextDouble() - this.nextDouble());
-+    }
-+
-+    default void consumeCount(int count) {
-+        for (int i = 0; i < count; i++) {
-+            this.nextInt();
-+        }
-+    }
-+
-+    default int nextInt(int min, int max) {
-+        if (min >= max) {
-+            throw new IllegalArgumentException("bound - origin is non positive");
-+        } else {
-+            return min + this.nextInt(max - min);
-+        }
-+    }
-+}
+     @Deprecated
+     static RandomSource createThreadSafe() {
+         return new ThreadSafeLegacyRandomSource(RandomSupport.generateUniqueSeed());
 diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
 index 311c853f2150247350ab6ccb2dd92d58dbfc645c..3d0a2756cff79c3584fa398b9b547b9023190075 100644
 --- a/src/main/java/net/minecraft/world/level/Level.java
@@ -120,73 +53,28 @@ index a2026900948e9157cb35ba0183dc3af20c63214f..e345b90eb65e9aacd03fe78f3c3152d0
          return new BlockPos(i, l, j);
      }
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/RandomSupport.java b/src/main/java/net/minecraft/world/level/levelgen/RandomSupport.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..cf3c31eca0656447b6ef1433418a2ba6a3898d8f
---- /dev/null
+index 4327bee689e986561d126d6018d3fee7d2623176..cf3c31eca0656447b6ef1433418a2ba6a3898d8f 100644
+--- a/src/main/java/net/minecraft/world/level/levelgen/RandomSupport.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/RandomSupport.java
-@@ -0,0 +1,65 @@
-+package net.minecraft.world.level.levelgen;
-+
-+import com.google.common.annotations.VisibleForTesting;
-+import com.google.common.base.Charsets;
-+import com.google.common.hash.HashFunction;
-+import com.google.common.hash.Hashing;
-+import com.google.common.primitives.Longs;
+@@ -5,6 +5,8 @@ import com.google.common.base.Charsets;
+ import com.google.common.hash.HashFunction;
+ import com.google.common.hash.Hashing;
+ import com.google.common.primitives.Longs;
 +
 +import java.util.concurrent.ThreadLocalRandom;
-+import java.util.concurrent.atomic.AtomicLong;
-+
-+public final class RandomSupport {
-+    public static final long GOLDEN_RATIO_64 = -7046029254386353131L;
-+    public static final long SILVER_RATIO_64 = 7640891576956012809L;
-+    private static final HashFunction MD5_128 = Hashing.md5();
-+    private static final AtomicLong SEED_UNIQUIFIER = new AtomicLong(8682522807148012L);
-+
-+    @VisibleForTesting
-+    public static long mixStafford13(long seed) {
-+        seed = (seed ^ seed >>> 30) * -4658895280553007687L;
-+        seed = (seed ^ seed >>> 27) * -7723592293110705685L;
-+        return seed ^ seed >>> 31;
-+    }
-+
-+    public static RandomSupport.Seed128bit upgradeSeedTo128bitUnmixed(long seed) {
-+        long l = seed ^ 7640891576956012809L;
-+        long m = l + -7046029254386353131L;
-+        return new RandomSupport.Seed128bit(l, m);
-+    }
-+
-+    public static RandomSupport.Seed128bit upgradeSeedTo128bit(long seed) {
-+        return upgradeSeedTo128bitUnmixed(seed).mixed();
-+    }
-+
-+    public static RandomSupport.Seed128bit seedFromHashOf(String seed) {
-+        byte[] bs = MD5_128.hashString(seed, Charsets.UTF_8).asBytes();
-+        long l = Longs.fromBytes(bs[0], bs[1], bs[2], bs[3], bs[4], bs[5], bs[6], bs[7]);
-+        long m = Longs.fromBytes(bs[8], bs[9], bs[10], bs[11], bs[12], bs[13], bs[14], bs[15]);
-+        return new RandomSupport.Seed128bit(l, m);
-+    }
-+
-+    public static long generateUniqueSeed() {
-+        return SEED_UNIQUIFIER.updateAndGet(seedUniquifier -> seedUniquifier * 1181783497276652981L) ^ System.nanoTime();
-+    }
-+
+ import java.util.concurrent.atomic.AtomicLong;
+ 
+ public final class RandomSupport {
+@@ -41,6 +43,12 @@ public final class RandomSupport {
+         return SEED_UNIQUIFIER.updateAndGet(seedUniquifier -> seedUniquifier * 1181783497276652981L) ^ System.nanoTime();
+     }
+ 
 +    // PurpurAsync start - Generate random seed faster
 +    public static long generateFasterSeed() {
 +        return SEED_UNIQUIFIER.updateAndGet((seedUniquifier) -> seedUniquifier * 1181783497276652981L) ^ ThreadLocalRandom.current().nextLong();
 +    }
 +    // PurpurAsync end
 +
-+    public static record Seed128bit(long seedLo, long seedHi) {
-+        public RandomSupport.Seed128bit xor(long seedLo, long seedHi) {
-+            return new RandomSupport.Seed128bit(this.seedLo ^ seedLo, this.seedHi ^ seedHi);
-+        }
-+
-+        public RandomSupport.Seed128bit xor(RandomSupport.Seed128bit seed) {
-+            return this.xor(seed.seedLo, seed.seedHi);
-+        }
-+
-+        public RandomSupport.Seed128bit mixed() {
-+            return new RandomSupport.Seed128bit(RandomSupport.mixStafford13(this.seedLo), RandomSupport.mixStafford13(this.seedHi));
-+        }
-+    }
-+}
+     public static record Seed128bit(long seedLo, long seedHi) {
+         public RandomSupport.Seed128bit xor(long seedLo, long seedHi) {
+             return new RandomSupport.Seed128bit(this.seedLo ^ seedLo, this.seedHi ^ seedHi);
