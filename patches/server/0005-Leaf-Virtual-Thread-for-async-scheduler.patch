@@ -1,0 +1,79 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: GideonWhite1029 <gideonwhite1029@gmail.com>
+Date: Mon, 6 May 2024 16:29:37 +0400
+Subject: [PATCH] Leaf: Virtual Thread for async scheduler
+
+
+diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
+index a0a7bfe8f5a40b945b83096de1efd650adeb9ee3..aaa67505cdeb869171ada9324ff0fdbde5b527fb 100644
+--- a/src/main/java/org/bukkit/craftbukkit/Main.java
++++ b/src/main/java/org/bukkit/craftbukkit/Main.java
+@@ -367,7 +367,6 @@ public class Main {
+             tryPreloadClass("org.bukkit.craftbukkit.scheduler.CraftScheduler$1");
+             tryPreloadClass("org.bukkit.craftbukkit.scheduler.CraftScheduler$2");
+             tryPreloadClass("org.bukkit.craftbukkit.scheduler.CraftScheduler$3");
+-            tryPreloadClass("org.bukkit.craftbukkit.scheduler.CraftScheduler$4");
+             tryPreloadClass("org.slf4j.helpers.MessageFormatter");
+             tryPreloadClass("org.slf4j.helpers.FormattingTuple");
+             tryPreloadClass("org.slf4j.helpers.BasicMarker");
+diff --git a/src/main/java/org/bukkit/craftbukkit/scheduler/CraftAsyncScheduler.java b/src/main/java/org/bukkit/craftbukkit/scheduler/CraftAsyncScheduler.java
+index 3c1992e212a6d6f1db4d5b807b38d71913619fc0..de11ef56b071a7b09d41c05b49474e5170131538 100644
+--- a/src/main/java/org/bukkit/craftbukkit/scheduler/CraftAsyncScheduler.java
++++ b/src/main/java/org/bukkit/craftbukkit/scheduler/CraftAsyncScheduler.java
+@@ -26,6 +26,7 @@ package org.bukkit.craftbukkit.scheduler;
+ import com.destroystokyo.paper.ServerSchedulerReportingWrapper;
+ import com.google.common.util.concurrent.ThreadFactoryBuilder;
+ import org.bukkit.plugin.Plugin;
++import org.purpurmc.purpur.PurpurConfig;
+ 
+ import java.util.ArrayList;
+ import java.util.Iterator;
+@@ -38,17 +39,29 @@ import java.util.concurrent.TimeUnit;
+ 
+ public class CraftAsyncScheduler extends CraftScheduler {
+ 
+-    private final ThreadPoolExecutor executor = new ThreadPoolExecutor(
+-            4, Integer.MAX_VALUE,30L, TimeUnit.SECONDS, new SynchronousQueue<>(),
+-            new ThreadFactoryBuilder().setNameFormat("Craft Scheduler Thread - %1$d").build());
++    private final org.apache.logging.log4j.Logger LOGGER = org.apache.logging.log4j.LogManager.getLogger(getClass().getName()); // Leaf - Class logger
++    private final Executor executor; // Leaf - use super class
+     private final Executor management = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
+             .setNameFormat("Craft Async Scheduler Management Thread").build());
+     private final List<CraftTask> temp = new ArrayList<>();
+ 
+     CraftAsyncScheduler() {
+         super(true);
+-        executor.allowCoreThreadTimeOut(true);
+-        executor.prestartAllCoreThreads();
++        // Leaf start - Ability to use Virtual Thread for async scheduler
++        if (PurpurConfig.useVirtualThreadforAsyncScheduler) {
++            executor = Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name("Craft Scheduler Thread - ", 0).factory());
++            return;
++        }
++
++        executor = new ThreadPoolExecutor(
++                4, Integer.MAX_VALUE, 30L, TimeUnit.SECONDS, new SynchronousQueue<>(),
++                new ThreadFactoryBuilder().setNameFormat("Craft Scheduler Thread - %1$d").setUncaughtExceptionHandler(new net.minecraft.DefaultUncaughtExceptionHandlerWithName(net.minecraft.server.MinecraftServer.LOGGER)).build());
++
++        var threadPoolExecutor = (ThreadPoolExecutor) executor;
++
++        threadPoolExecutor.allowCoreThreadTimeOut(true);
++        threadPoolExecutor.prestartAllCoreThreads();
++        // Leaf end - Ability to use Virtual Thread for async scheduler
+     }
+ 
+     @Override
+diff --git a/src/main/java/org/purpurmc/purpur/PurpurConfig.java b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
+index a2e629d479d8e38ed7d71370a4c3ae3a0c501334..856dd3c78d4500bd6072854732a6e8fde98c043a 100644
+--- a/src/main/java/org/purpurmc/purpur/PurpurConfig.java
++++ b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
+@@ -606,4 +606,9 @@ public class PurpurConfig {
+             MinecraftServer.LOGGER.info("Using {} threads for Async Pathfinding", asyncPathfindingMaxThreads);
+         }
+     }
++
++    public static boolean useVirtualThreadforAsyncScheduler = false;
++    private static void useVirtualThreadforAsyncScheduler() {
++        useVirtualThreadforAsyncScheduler = getBoolean("settings.purpurasync.use-virtual-thread-for-async-scheduler", useVirtualThreadforAsyncScheduler);
++    }
+ }
