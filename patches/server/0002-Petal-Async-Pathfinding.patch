@@ -359,7 +359,7 @@ index 0000000000000000000000000000000000000000..cb8765d1bf8efcdfa8dcfe61a1729267
 +}
 diff --git a/src/main/java/dev/gideonwhite1029/purpurasync/path/NodeEvaluatorCache.java b/src/main/java/dev/gideonwhite1029/purpurasync/path/NodeEvaluatorCache.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..6c881f02d1b510229b4c5ce0be9527e586dd6454
+index 0000000000000000000000000000000000000000..f1da7a97e9b50a82626a00c2da75e2b0d403ba31
 --- /dev/null
 +++ b/src/main/java/dev/gideonwhite1029/purpurasync/path/NodeEvaluatorCache.java
 @@ -0,0 +1,45 @@
@@ -408,9 +408,10 @@ index 0000000000000000000000000000000000000000..6c881f02d1b510229b4c5ce0be9527e5
 +        nodeEvaluatorToGenerator.remove(nodeEvaluator);
 +    }
 +}
+\ No newline at end of file
 diff --git a/src/main/java/dev/gideonwhite1029/purpurasync/path/NodeEvaluatorFeatures.java b/src/main/java/dev/gideonwhite1029/purpurasync/path/NodeEvaluatorFeatures.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..594297d4cb904da50cf299f3b75407aaf4a982db
+index 0000000000000000000000000000000000000000..aa8b5c89fd7ebcc2d1d72862d0df24fa2be35774
 --- /dev/null
 +++ b/src/main/java/dev/gideonwhite1029/purpurasync/path/NodeEvaluatorFeatures.java
 @@ -0,0 +1,21 @@
@@ -435,7 +436,6 @@ index 0000000000000000000000000000000000000000..594297d4cb904da50cf299f3b75407aa
 +        return new NodeEvaluatorFeatures(type, canPassDoors, canFloat, canWalkOverFences, canOpenDoors, allowBreaching);
 +    }
 +}
-\ No newline at end of file
 diff --git a/src/main/java/dev/gideonwhite1029/purpurasync/path/NodeEvaluatorGenerator.java b/src/main/java/dev/gideonwhite1029/purpurasync/path/NodeEvaluatorGenerator.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..36287f5f81534187c439ddbf42a7049279af1987
@@ -477,7 +477,7 @@ index 0000000000000000000000000000000000000000..bf68483928208ae48141c5fb723a2c3f
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/world/entity/ai/behavior/AcquirePoi.java b/src/main/java/net/minecraft/world/entity/ai/behavior/AcquirePoi.java
-index 6499e3fe49e453db11e51eaf717ca8b3b682056b..81417c968ab28789cba82bbc26b24ac284ad26a1 100644
+index 6499e3fe49e453db11e51eaf717ca8b3b682056b..3cc6c24a00ed57e968d142ebb333dbeda38b9416 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/behavior/AcquirePoi.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/behavior/AcquirePoi.java
 @@ -1,6 +1,7 @@
@@ -496,10 +496,11 @@ index 6499e3fe49e453db11e51eaf717ca8b3b682056b..81417c968ab28789cba82bbc26b24ac2
  
  public class AcquirePoi {
      public static final int SCAN_RANGE = 48;
-@@ -76,23 +78,56 @@ public class AcquirePoi {
+@@ -75,25 +77,56 @@ public class AcquirePoi {
+                                     java.util.List<Pair<Holder<PoiType>, BlockPos>> poiposes = new java.util.ArrayList<>();
                          io.papermc.paper.util.PoiAccess.findNearestPoiPositions(poiManager, poiPredicate, predicate2, entity.blockPosition(), world.purpurConfig.villagerAcquirePoiSearchRadius, world.purpurConfig.villagerAcquirePoiSearchRadius*world.purpurConfig.villagerAcquirePoiSearchRadius, PoiManager.Occupancy.HAS_SPACE, false, 5, poiposes); // Purpur
                                      Set<Pair<Holder<PoiType>, BlockPos>> set = new java.util.HashSet<>(poiposes);
-                                     // Paper end - optimise POI access
+-                                    // Paper end - optimise POI access
 -                                    Path path = findPathToPois(entity, set);
 -                                    if (path != null && path.canReach()) {
 -                                        BlockPos blockPos = path.getTarget();
@@ -563,12 +564,13 @@ index 6499e3fe49e453db11e51eaf717ca8b3b682056b..81417c968ab28789cba82bbc26b24ac2
 +                                            }
                                          }
 -                                    }
+-
 +                                    } // Kaiiju - Async path processing
- 
                                      return true;
                                  }
+                             }
 diff --git a/src/main/java/net/minecraft/world/entity/ai/behavior/MoveToTargetSink.java b/src/main/java/net/minecraft/world/entity/ai/behavior/MoveToTargetSink.java
-index 2a7a26ca447cc78f24e61a2bf557411c31eb16b2..757d3b13ddbabb2cedfe6d4fa4d7ac354f2ca710 100644
+index 2a7a26ca447cc78f24e61a2bf557411c31eb16b2..33b6c2f5a05c637206fc51e57a53e28c7d7da189 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/behavior/MoveToTargetSink.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/behavior/MoveToTargetSink.java
 @@ -15,12 +15,14 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -586,7 +588,7 @@ index 2a7a26ca447cc78f24e61a2bf557411c31eb16b2..757d3b13ddbabb2cedfe6d4fa4d7ac35
      @Nullable
      private BlockPos lastTargetPos;
      private float speedModifier;
-@@ -53,9 +55,10 @@ public class MoveToTargetSink extends Behavior<Mob> {
+@@ -53,9 +55,11 @@ public class MoveToTargetSink extends Behavior<Mob> {
              Brain<?> brain = entity.getBrain();
              WalkTarget walkTarget = brain.getMemory(MemoryModuleType.WALK_TARGET).get();
              boolean bl = this.reachedTarget(entity, walkTarget);
@@ -594,11 +596,12 @@ index 2a7a26ca447cc78f24e61a2bf557411c31eb16b2..757d3b13ddbabb2cedfe6d4fa4d7ac35
 +            if (!PurpurConfig.asyncPathfindingEnabled && !bl && this.tryComputePath(entity, walkTarget, world.getGameTime())) { // Kaiiju - petal - async path processing means we can't know if the path is reachable here
                  this.lastTargetPos = walkTarget.getTarget().currentBlockPosition();
                  return true;
-+            } else if (PurpurConfig.asyncPathfindingEnabled && !bl) { return true; // Kaiiju - async pathfinding
++            } else if (PurpurConfig.asyncPathfindingEnabled && !bl) {
++                return true; // Kaiiju - async pathfinding
              } else {
                  brain.eraseMemory(MemoryModuleType.WALK_TARGET);
                  if (bl) {
-@@ -69,6 +72,7 @@ public class MoveToTargetSink extends Behavior<Mob> {
+@@ -69,6 +73,7 @@ public class MoveToTargetSink extends Behavior<Mob> {
  
      @Override
      protected boolean canStillUse(ServerLevel world, Mob entity, long time) {
@@ -606,7 +609,7 @@ index 2a7a26ca447cc78f24e61a2bf557411c31eb16b2..757d3b13ddbabb2cedfe6d4fa4d7ac35
          if (this.path != null && this.lastTargetPos != null) {
              Optional<WalkTarget> optional = entity.getBrain().getMemory(MemoryModuleType.WALK_TARGET);
              boolean bl = optional.map(MoveToTargetSink::isWalkTargetSpectator).orElse(false);
-@@ -95,12 +99,68 @@ public class MoveToTargetSink extends Behavior<Mob> {
+@@ -95,12 +100,68 @@ public class MoveToTargetSink extends Behavior<Mob> {
  
      @Override
      protected void start(ServerLevel serverLevel, Mob mob, long l) {
@@ -675,7 +678,7 @@ index 2a7a26ca447cc78f24e61a2bf557411c31eb16b2..757d3b13ddbabb2cedfe6d4fa4d7ac35
          Path path = mob.getNavigation().getPath();
          Brain<?> brain = mob.getBrain();
          if (this.path != path) {
-@@ -108,15 +168,31 @@ public class MoveToTargetSink extends Behavior<Mob> {
+@@ -108,15 +169,31 @@ public class MoveToTargetSink extends Behavior<Mob> {
              brain.setMemory(MemoryModuleType.PATH, path);
          }
  
@@ -804,10 +807,10 @@ index 74aca307b4ebffe4e33c4fca3e07c23ca87622ac..37e61aa259f573cc5b5844026af99f3c
                      Node node = path.getNode(i);
                      this.doorPos = new BlockPos(node.x, node.y + 1, node.z);
 diff --git a/src/main/java/net/minecraft/world/entity/ai/navigation/AmphibiousPathNavigation.java b/src/main/java/net/minecraft/world/entity/ai/navigation/AmphibiousPathNavigation.java
-index ee38e447a810094d2253b85714b74282a4b4c2bc..a3198ef62490216045b828441f0b1c600cc3080b 100644
+index ee38e447a810094d2253b85714b74282a4b4c2bc..eaaf29daca8f3c9cea0dcfd16bee6972d36f0d69 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/navigation/AmphibiousPathNavigation.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/navigation/AmphibiousPathNavigation.java
-@@ -1,5 +1,7 @@
+@@ -1,22 +1,41 @@
  package net.minecraft.world.entity.ai.navigation;
  
 +import dev.gideonwhite1029.purpurasync.path.NodeEvaluatorFeatures;
@@ -815,12 +818,11 @@ index ee38e447a810094d2253b85714b74282a4b4c2bc..a3198ef62490216045b828441f0b1c60
  import net.minecraft.core.BlockPos;
  import net.minecraft.world.entity.Mob;
  import net.minecraft.world.level.Level;
-@@ -7,16 +9,34 @@ import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
+ import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
  import net.minecraft.world.level.pathfinder.PathFinder;
  import net.minecraft.world.phys.Vec3;
- 
 +import org.purpurmc.purpur.PurpurConfig;
-+
+ 
  public class AmphibiousPathNavigation extends PathNavigation {
      public AmphibiousPathNavigation(Mob mob, Level world) {
          super(mob, world);
@@ -908,7 +910,7 @@ index a3e0c5af4cc9323c02e88e768cbda9e46854aea1..7ddb315b3e49bcb8d624001addaf378e
          if (!this.isDone()) {
              if (this.canUpdatePath()) {
 diff --git a/src/main/java/net/minecraft/world/entity/ai/navigation/GroundPathNavigation.java b/src/main/java/net/minecraft/world/entity/ai/navigation/GroundPathNavigation.java
-index 74ae984ac41bcdd2cc45f1bec461cdc5f69977c6..a963d1a3109dc3c8db64341ade24245a93560c51 100644
+index 62634bedd97c5be9ecce24ab0cff205715a68da8..dfa9b033d85e3f35ddb573d2718f2992f2784099 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/navigation/GroundPathNavigation.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/navigation/GroundPathNavigation.java
 @@ -1,5 +1,7 @@
@@ -919,8 +921,8 @@ index 74ae984ac41bcdd2cc45f1bec461cdc5f69977c6..a963d1a3109dc3c8db64341ade24245a
  import net.minecraft.core.BlockPos;
  import net.minecraft.core.SectionPos;
  import net.minecraft.util.Mth;
-@@ -15,6 +17,7 @@ import net.minecraft.world.level.pathfinder.Path;
- import net.minecraft.world.level.pathfinder.PathFinder;
+@@ -15,6 +17,7 @@ import net.minecraft.world.level.pathfinder.PathFinder;
+ import net.minecraft.world.level.pathfinder.PathType;
  import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
  import net.minecraft.world.phys.Vec3;
 +import org.purpurmc.purpur.PurpurConfig;
@@ -957,7 +959,7 @@ index 74ae984ac41bcdd2cc45f1bec461cdc5f69977c6..a963d1a3109dc3c8db64341ade24245a
  
      @Override
 diff --git a/src/main/java/net/minecraft/world/entity/ai/navigation/PathNavigation.java b/src/main/java/net/minecraft/world/entity/ai/navigation/PathNavigation.java
-index e12cf130678bda7c1f5873cb03172a698e18fc85..0ccd80af518654525b369f557d8c11046c93cc0b 100644
+index 544920a31b649985333f82beafa94a3392f5853e..9d1e1aa55c6cb97ea109d4b9357b5c8f004b8e51 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/navigation/PathNavigation.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/navigation/PathNavigation.java
 @@ -5,6 +5,9 @@ import java.util.Set;
@@ -970,7 +972,7 @@ index e12cf130678bda7c1f5873cb03172a698e18fc85..0ccd80af518654525b369f557d8c1104
  import net.minecraft.core.BlockPos;
  import net.minecraft.core.Vec3i;
  import net.minecraft.network.protocol.game.DebugPackets;
-@@ -25,6 +28,7 @@ import net.minecraft.world.level.pathfinder.PathFinder;
+@@ -25,6 +28,7 @@ import net.minecraft.world.level.pathfinder.PathType;
  import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
  import net.minecraft.world.phys.HitResult;
  import net.minecraft.world.phys.Vec3;
@@ -978,17 +980,7 @@ index e12cf130678bda7c1f5873cb03172a698e18fc85..0ccd80af518654525b369f557d8c1104
  
  public abstract class PathNavigation {
      private static final int MAX_TIME_RECOMPUTE = 20;
-@@ -144,7 +148,8 @@ public abstract class PathNavigation {
-         return this.createPath(positions, target, range, useHeadPos, distance, (float) this.mob.getAttributeValue(Attributes.FOLLOW_RANGE));
-     }
- 
--    @Nullable protected Path createPath(Set<BlockPos> positions, @Nullable Entity target, int range, boolean useHeadPos, int distance, float followRange) {
-+    @Nullable
-+    protected Path createPath(Set<BlockPos> positions, @Nullable Entity target, int range, boolean useHeadPos, int distance, float followRange) {
-         // Paper end - EntityPathfindEvent
-         if (positions.isEmpty()) {
-             return null;
-@@ -152,6 +157,10 @@ public abstract class PathNavigation {
+@@ -152,6 +156,10 @@ public abstract class PathNavigation {
              return null;
          } else if (!this.canUpdatePath()) {
              return null;
@@ -999,7 +991,7 @@ index e12cf130678bda7c1f5873cb03172a698e18fc85..0ccd80af518654525b369f557d8c1104
          } else if (this.path != null && !this.path.isDone() && positions.contains(this.targetPos)) {
              return this.path;
          } else {
-@@ -159,7 +168,7 @@ public abstract class PathNavigation {
+@@ -159,7 +167,7 @@ public abstract class PathNavigation {
              boolean copiedSet = false;
              for (BlockPos possibleTarget : positions) {
                  if (!this.mob.getCommandSenderWorld().getWorldBorder().isWithinBounds(possibleTarget) || !new com.destroystokyo.paper.event.entity.EntityPathfindEvent(this.mob.getBukkitEntity(), // Paper - don't path out of world border
@@ -1008,7 +1000,7 @@ index e12cf130678bda7c1f5873cb03172a698e18fc85..0ccd80af518654525b369f557d8c1104
                      if (!copiedSet) {
                          copiedSet = true;
                          positions = new java.util.HashSet<>(positions);
-@@ -174,15 +183,33 @@ public abstract class PathNavigation {
+@@ -174,15 +182,33 @@ public abstract class PathNavigation {
              // Paper end - EntityPathfindEvent
              //this.level.getProfiler().push("pathfind"); // Purpur
              BlockPos blockPos = useHeadPos ? this.mob.blockPosition().above() : this.mob.blockPosition();
@@ -1049,7 +1041,7 @@ index e12cf130678bda7c1f5873cb03172a698e18fc85..0ccd80af518654525b369f557d8c1104
  
              return path;
          }
-@@ -229,8 +256,8 @@ public abstract class PathNavigation {
+@@ -233,8 +259,8 @@ public abstract class PathNavigation {
              if (this.isDone()) {
                  return false;
              } else {
@@ -1060,7 +1052,7 @@ index e12cf130678bda7c1f5873cb03172a698e18fc85..0ccd80af518654525b369f557d8c1104
                      return false;
                  } else {
                      this.speedModifier = speed;
-@@ -253,6 +280,7 @@ public abstract class PathNavigation {
+@@ -257,6 +283,7 @@ public abstract class PathNavigation {
          if (this.hasDelayedRecomputation) {
              this.recomputePath();
          }
@@ -1068,7 +1060,7 @@ index e12cf130678bda7c1f5873cb03172a698e18fc85..0ccd80af518654525b369f557d8c1104
  
          if (!this.isDone()) {
              if (this.canUpdatePath()) {
-@@ -279,6 +307,7 @@ public abstract class PathNavigation {
+@@ -283,6 +310,7 @@ public abstract class PathNavigation {
      }
  
      protected void followThePath() {
@@ -1076,7 +1068,7 @@ index e12cf130678bda7c1f5873cb03172a698e18fc85..0ccd80af518654525b369f557d8c1104
          Vec3 vec3 = this.getTempMobPos();
          this.maxDistanceToWaypoint = this.mob.getBbWidth() > 0.75F ? this.mob.getBbWidth() / 2.0F : 0.75F - this.mob.getBbWidth() / 2.0F;
          Vec3i vec3i = this.path.getNextNodePos();
-@@ -435,7 +464,7 @@ public abstract class PathNavigation {
+@@ -439,7 +467,7 @@ public abstract class PathNavigation {
      public boolean shouldRecomputePath(BlockPos pos) {
          if (this.hasDelayedRecomputation) {
              return false;
@@ -1086,7 +1078,7 @@ index e12cf130678bda7c1f5873cb03172a698e18fc85..0ccd80af518654525b369f557d8c1104
              Vec3 vec3 = new Vec3(((double)node.x + this.mob.getX()) / 2.0, ((double)node.y + this.mob.getY()) / 2.0, ((double)node.z + this.mob.getZ()) / 2.0);
              return pos.closerToCenterThan(vec3, (double)(this.path.getNodeCount() - this.path.getNextNodeIndex()));
 diff --git a/src/main/java/net/minecraft/world/entity/ai/navigation/WaterBoundPathNavigation.java b/src/main/java/net/minecraft/world/entity/ai/navigation/WaterBoundPathNavigation.java
-index ce7398a617abe6e800c1e014b3ac5c970eb15c8a..cefe3ee69df4c30c9b064ef6a216a5bd79b93be5 100644
+index ce7398a617abe6e800c1e014b3ac5c970eb15c8a..c552cabed8986e8a92ae927a2114f3ea2f5b5fb3 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/navigation/WaterBoundPathNavigation.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/navigation/WaterBoundPathNavigation.java
 @@ -1,5 +1,7 @@
@@ -1097,16 +1089,15 @@ index ce7398a617abe6e800c1e014b3ac5c970eb15c8a..cefe3ee69df4c30c9b064ef6a216a5bd
  import net.minecraft.core.BlockPos;
  import net.minecraft.world.entity.EntityType;
  import net.minecraft.world.entity.Mob;
-@@ -8,6 +10,8 @@ import net.minecraft.world.level.pathfinder.PathFinder;
+@@ -7,6 +9,7 @@ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.pathfinder.PathFinder;
  import net.minecraft.world.level.pathfinder.SwimNodeEvaluator;
  import net.minecraft.world.phys.Vec3;
- 
 +import org.purpurmc.purpur.PurpurConfig;
-+
+ 
  public class WaterBoundPathNavigation extends PathNavigation {
      private boolean allowBreaching;
- 
-@@ -15,11 +19,27 @@ public class WaterBoundPathNavigation extends PathNavigation {
+@@ -15,11 +18,27 @@ public class WaterBoundPathNavigation extends PathNavigation {
          super(entity, world);
      }
  
@@ -1136,26 +1127,18 @@ index ce7398a617abe6e800c1e014b3ac5c970eb15c8a..cefe3ee69df4c30c9b064ef6a216a5bd
  
      @Override
 diff --git a/src/main/java/net/minecraft/world/entity/ai/sensing/NearestBedSensor.java b/src/main/java/net/minecraft/world/entity/ai/sensing/NearestBedSensor.java
-index 9104d7010bda6f9f73b478c11490ef9c53f76da2..22b32ce7df01c16859fbb140ba779e9e833c2821 100644
+index 9104d7010bda6f9f73b478c11490ef9c53f76da2..51e45a4683291b1a1fadd40c744eb3263d36b300 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/sensing/NearestBedSensor.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/sensing/NearestBedSensor.java
-@@ -2,12 +2,15 @@ package net.minecraft.world.entity.ai.sensing;
+@@ -2,6 +2,7 @@ package net.minecraft.world.entity.ai.sensing;
  
  import com.google.common.collect.ImmutableSet;
  import com.mojang.datafixers.util.Pair;
 +import dev.gideonwhite1029.purpurasync.path.AsyncPathProcessor;
  import it.unimi.dsi.fastutil.longs.Long2LongMap;
  import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
-+
  import java.util.Optional;
- import java.util.Set;
- import java.util.function.Predicate;
- import java.util.stream.Collectors;
-+
- import net.minecraft.core.BlockPos;
- import net.minecraft.core.Holder;
- import net.minecraft.server.level.ServerLevel;
-@@ -18,6 +21,7 @@ import net.minecraft.world.entity.ai.village.poi.PoiManager;
+@@ -18,6 +19,7 @@ import net.minecraft.world.entity.ai.village.poi.PoiManager;
  import net.minecraft.world.entity.ai.village.poi.PoiType;
  import net.minecraft.world.entity.ai.village.poi.PoiTypes;
  import net.minecraft.world.level.pathfinder.Path;
@@ -1163,7 +1146,7 @@ index 9104d7010bda6f9f73b478c11490ef9c53f76da2..22b32ce7df01c16859fbb140ba779e9e
  
  public class NearestBedSensor extends Sensor<Mob> {
      private static final int CACHE_TIMEOUT = 40;
-@@ -57,17 +61,37 @@ public class NearestBedSensor extends Sensor<Mob> {
+@@ -57,17 +59,37 @@ public class NearestBedSensor extends Sensor<Mob> {
              java.util.List<Pair<Holder<PoiType>, BlockPos>> poiposes = new java.util.ArrayList<>();
              // don't ask me why it's unbounded. ask mojang.
              io.papermc.paper.util.PoiAccess.findAnyPoiPositions(poiManager, type -> type.is(PoiTypes.HOME), predicate, entity.blockPosition(), world.purpurConfig.villagerNearestBedSensorSearchRadius, PoiManager.Occupancy.ANY, false, Integer.MAX_VALUE, poiposes); // Purpur
@@ -1212,10 +1195,10 @@ index 9104d7010bda6f9f73b478c11490ef9c53f76da2..22b32ce7df01c16859fbb140ba779e9e
      }
  }
 diff --git a/src/main/java/net/minecraft/world/entity/animal/Bee.java b/src/main/java/net/minecraft/world/entity/animal/Bee.java
-index 997ab942be9f742804041b07d607e7dd6473ba96..9ef7be84999ab0ec39d2b58a48cdaebf42db10c9 100644
+index 539170813921de2dfcd7ef84dd7512d73cd27e68..d47576293144efcbfb3906a77d757ce810641990 100644
 --- a/src/main/java/net/minecraft/world/entity/animal/Bee.java
 +++ b/src/main/java/net/minecraft/world/entity/animal/Bee.java
-@@ -1154,7 +1154,7 @@ public class Bee extends Animal implements NeutralMob, FlyingAnimal {
+@@ -1135,7 +1135,7 @@ public class Bee extends Animal implements NeutralMob, FlyingAnimal {
                          } else {
                              Bee.this.pathfindRandomlyTowards(Bee.this.hivePos);
                          }
@@ -1224,7 +1207,7 @@ index 997ab942be9f742804041b07d607e7dd6473ba96..9ef7be84999ab0ec39d2b58a48cdaebf
                          boolean flag = this.pathfindDirectlyTowards(Bee.this.hivePos);
  
                          if (!flag) {
-@@ -1216,7 +1216,7 @@ public class Bee extends Animal implements NeutralMob, FlyingAnimal {
+@@ -1197,7 +1197,7 @@ public class Bee extends Animal implements NeutralMob, FlyingAnimal {
              } else {
                  Path pathentity = Bee.this.navigation.getPath();
  
@@ -1234,7 +1217,7 @@ index 997ab942be9f742804041b07d607e7dd6473ba96..9ef7be84999ab0ec39d2b58a48cdaebf
          }
      }
 diff --git a/src/main/java/net/minecraft/world/entity/animal/frog/Frog.java b/src/main/java/net/minecraft/world/entity/animal/frog/Frog.java
-index 37f1d3c656997906cef57d9dbefc226d04fc65fe..ed71203509a31360848a1bc195bec9e11177ebad 100644
+index ee8c232ddaa518377bdfa54e83ffc04f7a2f2c9a..04f64ca49d0699af2999c16d717f524f62407983 100644
 --- a/src/main/java/net/minecraft/world/entity/animal/frog/Frog.java
 +++ b/src/main/java/net/minecraft/world/entity/animal/frog/Frog.java
 @@ -6,6 +6,9 @@ import java.util.Objects;
@@ -1247,15 +1230,15 @@ index 37f1d3c656997906cef57d9dbefc226d04fc65fe..ed71203509a31360848a1bc195bec9e1
  import net.minecraft.core.BlockPos;
  import net.minecraft.core.Holder;
  import net.minecraft.core.registries.BuiltInRegistries;
-@@ -66,6 +69,7 @@ import net.minecraft.world.level.pathfinder.Node;
- import net.minecraft.world.level.pathfinder.PathFinder;
+@@ -65,6 +68,7 @@ import net.minecraft.world.level.pathfinder.PathFinder;
+ import net.minecraft.world.level.pathfinder.PathType;
+ import net.minecraft.world.level.pathfinder.PathfindingContext;
  import net.minecraft.world.phys.Vec3;
- import org.joml.Vector3f;
 +import org.purpurmc.purpur.PurpurConfig;
  
- public class Frog extends Animal implements VariantHolder<FrogVariant> {
-     public static final Ingredient TEMPTATION_ITEM = Ingredient.of(Items.SLIME_BALL);
-@@ -471,6 +475,17 @@ public class Frog extends Animal implements VariantHolder<FrogVariant> {
+ public class Frog extends Animal implements VariantHolder<Holder<FrogVariant>> {
+     protected static final ImmutableList<SensorType<? extends Sensor<? super Frog>>> SENSOR_TYPES = ImmutableList.of(
+@@ -468,6 +472,17 @@ public class Frog extends Animal implements VariantHolder<Holder<FrogVariant>> {
              super(frog, world);
          }
  
@@ -1271,9 +1254,9 @@ index 37f1d3c656997906cef57d9dbefc226d04fc65fe..ed71203509a31360848a1bc195bec9e1
 +        // Kaiiju end
 +
          @Override
-         public boolean canCutCorner(BlockPathTypes nodeType) {
-             return nodeType != BlockPathTypes.WATER_BORDER && super.canCutCorner(nodeType);
-@@ -480,7 +495,12 @@ public class Frog extends Animal implements VariantHolder<FrogVariant> {
+         public boolean canCutCorner(PathType nodeType) {
+             return nodeType != PathType.WATER_BORDER && super.canCutCorner(nodeType);
+@@ -477,7 +492,12 @@ public class Frog extends Animal implements VariantHolder<Holder<FrogVariant>> {
          protected PathFinder createPathFinder(int range) {
              this.nodeEvaluator = new Frog.FrogNodeEvaluator(true);
              this.nodeEvaluator.setCanPassDoors(true);
@@ -1288,10 +1271,10 @@ index 37f1d3c656997906cef57d9dbefc226d04fc65fe..ed71203509a31360848a1bc195bec9e1
      }
  }
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Drowned.java b/src/main/java/net/minecraft/world/entity/monster/Drowned.java
-index 7600e747d91ae888eb801cfafcb09bffb76c8e62..4ba902ba72af6975f33088452767ae422810c8da 100644
+index 15afee3c4f6307557321424560d2340e23cd472b..05ed15bcd5974af13395316b50f4ae78385f2ee4 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Drowned.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Drowned.java
-@@ -293,7 +293,7 @@ public class Drowned extends Zombie implements RangedAttackMob {
+@@ -296,7 +296,7 @@ public class Drowned extends Zombie implements RangedAttackMob {
      protected boolean closeToNextPos() {
          Path pathentity = this.getNavigation().getPath();
  
@@ -1301,7 +1284,7 @@ index 7600e747d91ae888eb801cfafcb09bffb76c8e62..4ba902ba72af6975f33088452767ae42
  
              if (blockposition != null) {
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Strider.java b/src/main/java/net/minecraft/world/entity/monster/Strider.java
-index 2f49b528601a1feb7246fe7a9b83ce828c2d78fc..548a014e75ea11e9795e04d1c9a928e36a09a078 100644
+index 5ea5bf9c0e11b0e1f9fe50093899c6e35ee6cf4f..233f9b97801a160000ee5cd9651d0e9e2679c825 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Strider.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Strider.java
 @@ -6,6 +6,9 @@ import java.util.Iterator;
@@ -1314,10 +1297,10 @@ index 2f49b528601a1feb7246fe7a9b83ce828c2d78fc..548a014e75ea11e9795e04d1c9a928e3
  import net.minecraft.core.BlockPos;
  import net.minecraft.core.Direction;
  import net.minecraft.nbt.CompoundTag;
-@@ -74,6 +77,7 @@ import net.minecraft.world.phys.AABB;
+@@ -73,6 +76,7 @@ import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+ import net.minecraft.world.phys.AABB;
  import net.minecraft.world.phys.Vec3;
  import net.minecraft.world.phys.shapes.CollisionContext;
- import org.joml.Vector3f;
 +import org.purpurmc.purpur.PurpurConfig;
  
  public class Strider extends Animal implements ItemSteerable, Saddleable {
@@ -1352,22 +1335,22 @@ index 2f49b528601a1feb7246fe7a9b83ce828c2d78fc..548a014e75ea11e9795e04d1c9a928e3
  
          @Override
 diff --git a/src/main/java/net/minecraft/world/entity/monster/warden/Warden.java b/src/main/java/net/minecraft/world/entity/monster/warden/Warden.java
-index bf7ef72a7d92db8f11789a69583270644de0dac7..fb40c0a031e3367b7b23fc6e16ed1e4eaaf4dec9 100644
+index 0bb577ec9ba0d23a741ccf067ac35f6be68312ca..b84c9da55498c3160a324d7e33d85f41c05b9316 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/warden/Warden.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/warden/Warden.java
-@@ -71,6 +71,7 @@ import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+@@ -71,6 +71,7 @@ import net.minecraft.world.level.pathfinder.PathType;
+ import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
  import net.minecraft.world.phys.Vec3;
  import org.jetbrains.annotations.Contract;
- import org.joml.Vector3f;
 +import org.purpurmc.purpur.PurpurConfig;
  import org.slf4j.Logger;
  
  public class Warden extends Monster implements VibrationSystem {
-@@ -625,12 +626,22 @@ public class Warden extends Monster implements VibrationSystem {
+@@ -618,12 +619,22 @@ public class Warden extends Monster implements VibrationSystem {
              protected PathFinder createPathFinder(int range) {
                  this.nodeEvaluator = new WalkNodeEvaluator();
                  this.nodeEvaluator.setCanPassDoors(true);
--                return new PathFinder(this.nodeEvaluator, range) {
+-                return new PathFinder(this.nodeEvaluator, range) { // CraftBukkit - decompile error
 -                    @Override
 -                    protected float distance(Node a, Node b) {
 -                        return a.distanceToXZ(b);
@@ -1424,7 +1407,7 @@ index d9d0fff9962131808d54cca20f209df50b8e4af1..f2f91b05cc8e1a2d05d44f209ff784b0
              return false;
          } else if (o.nodes.size() != this.nodes.size()) {
 diff --git a/src/main/java/net/minecraft/world/level/pathfinder/PathFinder.java b/src/main/java/net/minecraft/world/level/pathfinder/PathFinder.java
-index 2046ac397f5c46cc45f233e36abbdbe717753fc7..18dd4147a39f939f2132fe6a974c15e56a2275c2 100644
+index 404080976208c30e9e95e5bee47c2a749e709a45..ca204fe42536f9e9ecc3a64676e327f84c6b0b54 100644
 --- a/src/main/java/net/minecraft/world/level/pathfinder/PathFinder.java
 +++ b/src/main/java/net/minecraft/world/level/pathfinder/PathFinder.java
 @@ -11,11 +11,16 @@ import java.util.Set;
@@ -1476,16 +1459,16 @@ index 2046ac397f5c46cc45f233e36abbdbe717753fc7..18dd4147a39f939f2132fe6a974c15e5
 +                : NodeEvaluatorCache.takeNodeEvaluator(this.nodeEvaluatorGenerator, this.nodeEvaluator);
 +        nodeEvaluator.prepare(world, mob);
 +        Node node = nodeEvaluator.getStart();
-+        // Kaiiju end
++                // Kaiiju end
          if (node == null) {
 +            NodeEvaluatorCache.removeNodeEvaluator(nodeEvaluator); // Kaiiju - petal - handle nodeEvaluatorGenerator
              return null;
          } else {
              // Paper start - Perf: remove streams and optimize collection
              List<Map.Entry<Target, BlockPos>> map = Lists.newArrayList();
-             for (BlockPos pos : positions) {
--                map.add(new java.util.AbstractMap.SimpleEntry<>(this.nodeEvaluator.getGoal(pos.getX(), pos.getY(), pos.getZ()), pos));
-+                map.add(new java.util.AbstractMap.SimpleEntry<>(nodeEvaluator.getGoal(pos.getX(), pos.getY(), pos.getZ()), pos)); // Kaiiju - petal - handle nodeEvaluatorGenerator
+             for (final BlockPos pos : positions) {
+-                map.add(new java.util.AbstractMap.SimpleEntry<>(this.nodeEvaluator.getTarget(pos.getX(), pos.getY(), pos.getZ()), pos));
++                map.add(new java.util.AbstractMap.SimpleEntry<>(nodeEvaluator.getTarget(pos.getX(), pos.getY(), pos.getZ()), pos)); // Kaiiju - petal - handle nodeEvaluatorGenerator
              }
              // Paper end - Perf: remove streams and optimize collection
 -            Path path = this.findPath(world.getProfiler(), node, map, followRange, distance, rangeMultiplier);
@@ -1545,23 +1528,23 @@ index 2046ac397f5c46cc45f233e36abbdbe717753fc7..18dd4147a39f939f2132fe6a974c15e5
                  for (int l = 0; l < k; l++) {
                      Node node2 = this.neighbors[l];
 diff --git a/src/main/java/net/minecraft/world/level/pathfinder/SwimNodeEvaluator.java b/src/main/java/net/minecraft/world/level/pathfinder/SwimNodeEvaluator.java
-index 074e9c7f58adebadc3076bfc4b63adea8b1d521d..3cb00814eb7e248104e9a6bd016b6c342ba83220 100644
+index 6308822f819d7cb84c8070c8a7eec1a3f822114b..e49851557f991ca1fc2f78abfb819609e672a526 100644
 --- a/src/main/java/net/minecraft/world/level/pathfinder/SwimNodeEvaluator.java
 +++ b/src/main/java/net/minecraft/world/level/pathfinder/SwimNodeEvaluator.java
-@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
+@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
  import net.minecraft.world.level.material.FluidState;
  
  public class SwimNodeEvaluator extends NodeEvaluator {
 -    private final boolean allowBreaching;
 +    public final boolean allowBreaching; // Kaiiju - make this public
-     private final Long2ObjectMap<BlockPathTypes> pathTypesByPosCache = new Long2ObjectOpenHashMap<>();
+     private final Long2ObjectMap<PathType> pathTypesByPosCache = new Long2ObjectOpenHashMap<>();
  
      public SwimNodeEvaluator(boolean canJumpOutOfWater) {
 diff --git a/src/main/java/org/purpurmc/purpur/PurpurConfig.java b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
-index 24536cbf981866bfc3e28ee4162556cd7c90d005..4f1d8c4181fb124b6984a3295ab1d0468912271e 100644
+index 8ea168571da3e7f46f1b6727971a4943ec18465b..a2e629d479d8e38ed7d71370a4c3ae3a0c501334 100644
 --- a/src/main/java/org/purpurmc/purpur/PurpurConfig.java
 +++ b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
-@@ -662,4 +662,22 @@ public class PurpurConfig {
+@@ -586,4 +586,24 @@ public class PurpurConfig {
      private static void registerMinecraftDebugCommands() {
          registerMinecraftDebugCommands = getBoolean("settings.register-minecraft-debug-commands", registerMinecraftDebugCommands);
      }
@@ -1569,6 +1552,7 @@ index 24536cbf981866bfc3e28ee4162556cd7c90d005..4f1d8c4181fb124b6984a3295ab1d046
 +    public static boolean asyncPathfindingEnabled = false;
 +    public static int asyncPathfindingMaxThreads = 0;
 +    public static int asyncPathfindingKeepalive = 60;
++
 +    private static void asyncPathfinding() {
 +        asyncPathfindingEnabled = getBoolean("settings.purpurasync.asyncpathfinding.enabled", asyncPathfindingEnabled);
 +        asyncPathfindingMaxThreads = getInt("settings.purpurasync.asyncpathfinding.max-threads", asyncPathfindingMaxThreads);
@@ -1576,7 +1560,8 @@ index 24536cbf981866bfc3e28ee4162556cd7c90d005..4f1d8c4181fb124b6984a3295ab1d046
 +        if (asyncPathfindingMaxThreads < 0) {
 +            asyncPathfindingMaxThreads = Math.max(Runtime.getRuntime().availableProcessors() + asyncPathfindingMaxThreads, 1);
 +        } else if (asyncPathfindingMaxThreads == 0) {
-+            asyncPathfindingMaxThreads = Math.max(Runtime.getRuntime().availableProcessors() / 4, 1); }
++            asyncPathfindingMaxThreads = Math.max(Runtime.getRuntime().availableProcessors() / 4, 1);
++        }
 +        if (!asyncPathfindingEnabled) {
 +            asyncPathfindingMaxThreads = 0;
 +        } else {

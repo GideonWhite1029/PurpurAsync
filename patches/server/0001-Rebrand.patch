@@ -5,10 +5,10 @@ Subject: [PATCH] Rebrand
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 1cad0728d005df9475a978b272adef9703f2ba46..2cf7b13fa81f8e76261c1cebfe54828f53f359e1 100644
+index 81996f00384674b29368e8bea944bdd14d631da3..8b64c3b2db6ec598d6a56e46de1f09e6292b1cba 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -13,12 +13,10 @@ configurations.named(log4jPlugins.compileClasspathConfigurationName) {
+@@ -12,12 +12,10 @@ configurations.named(log4jPlugins.compileClasspathConfigurationName) {
  val alsoShade: Configuration by configurations.creating
  
  dependencies {
@@ -22,7 +22,7 @@ index 1cad0728d005df9475a978b272adef9703f2ba46..2cf7b13fa81f8e76261c1cebfe54828f
      // Paper start
      implementation("org.jline:jline-terminal-jansi:3.21.0")
      implementation("net.minecrell:terminalconsoleappender:1.3.0")
-@@ -94,7 +92,7 @@ tasks.jar {
+@@ -87,7 +85,7 @@ tasks.jar {
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
              "Implementation-Title" to "CraftBukkit",
@@ -66,10 +66,10 @@ index 462a6eed350fd660ddaf25d567bb6e97b77d0b2b..a6c94b66c4db992b7a8ac69fe5c9bb17
          switch (distance) {
              case -1:
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index dabaf0cff6dafe8ca411996e67ead9a2cf84dfb8..e59507931d62c0037addb7fc0a9977ffbd84b5fa 100644
+index 19937ffa2c93cb75ea8dba58dd5a8214adc035fa..b30c0858fcd7cb67c8178bd1d20947ac04d04db9 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -266,7 +266,7 @@ import javax.annotation.Nullable; // Paper
+@@ -268,7 +268,7 @@ import javax.annotation.Nullable; // Paper
  import javax.annotation.Nonnull; // Paper
  
  public final class CraftServer implements Server {
@@ -92,7 +92,7 @@ index 99597258e8e88cd9e2c901c4ac3ff7faeeabee2b..f910893c56e1abf28d17fb266a92a138
  
          if (stream != null) {
 diff --git a/src/main/java/org/purpurmc/purpur/PurpurConfig.java b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
-index efe25d3894f3ad000257c72d9a5e06ef22446d41..24536cbf981866bfc3e28ee4162556cd7c90d005 100644
+index f49108ed94f7787347c5e0a721646083d6dffafc..8ea168571da3e7f46f1b6727971a4943ec18465b 100644
 --- a/src/main/java/org/purpurmc/purpur/PurpurConfig.java
 +++ b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
 @@ -231,7 +231,7 @@ public class PurpurConfig {

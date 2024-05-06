@@ -5,7 +5,7 @@ Subject: [PATCH] Akarin: Save Json list asynchronously
 
 
 diff --git a/src/main/java/net/minecraft/server/players/StoredUserList.java b/src/main/java/net/minecraft/server/players/StoredUserList.java
-index 7e133752ccb1ea7c0b4fa781feb1a88e2cfdcf6d..82bc832378347f12c65b5919d7ff654196ebf73f 100644
+index c038da20b76c0b7b1c18471b20be01e849d29f3a..91419188263727c15dc36c8d6cfe8caa895f13a6 100644
 --- a/src/main/java/net/minecraft/server/players/StoredUserList.java
 +++ b/src/main/java/net/minecraft/server/players/StoredUserList.java
 @@ -21,6 +21,8 @@ import java.util.Map;
@@ -17,7 +17,7 @@ index 7e133752ccb1ea7c0b4fa781feb1a88e2cfdcf6d..82bc832378347f12c65b5919d7ff6541
  import net.minecraft.Util;
  import net.minecraft.util.GsonHelper;
  import org.slf4j.Logger;
-@@ -103,36 +105,46 @@ public abstract class StoredUserList<K, V extends StoredUserEntry<K>> {
+@@ -103,36 +105,44 @@ public abstract class StoredUserList<K, V extends StoredUserEntry<K>> {
      }
  
      public void save() throws IOException {
@@ -47,13 +47,10 @@ index 7e133752ccb1ea7c0b4fa781feb1a88e2cfdcf6d..82bc832378347f12c65b5919d7ff6541
 +                BufferedWriter bufferedwriter = Files.newWriter(this.file, StandardCharsets.UTF_8);
  
 -        try {
--            StoredUserList.GSON.toJson(jsonarray, bufferedwriter);
+-            StoredUserList.GSON.toJson(jsonarray, StoredUserList.GSON.newJsonWriter(bufferedwriter));
 -        } catch (Throwable throwable) {
 -            if (bufferedwriter != null) {
                  try {
--                    bufferedwriter.close();
--                } catch (Throwable throwable1) {
--                    throwable.addSuppressed(throwable1);
 +                    StoredUserList.GSON.toJson(jsonarray, bufferedwriter);
 +                } catch (Throwable throwable) {
 +                    if (bufferedwriter != null) {
@@ -65,22 +62,23 @@ index 7e133752ccb1ea7c0b4fa781feb1a88e2cfdcf6d..82bc832378347f12c65b5919d7ff6541
 +                    }
 +
 +                    throw throwable;
-                 }
--            }
- 
--            throw throwable;
--        }
-+                if (bufferedwriter != null) {
-+                    bufferedwriter.close();
 +                }
- 
--        if (bufferedwriter != null) {
--            bufferedwriter.close();
--        }
++                if (bufferedwriter != null) {
+                     bufferedwriter.close();
+-                } catch (Throwable throwable1) {
+-                    throwable.addSuppressed(throwable1);
+                 }
 +                // PurpurAsync start - Akarin - Save json list async
 +            } catch (Exception e) {
 +                StoredUserList.LOGGER.warn("Failed to async save " + this.file, e);
-+            }
+             }
+-
+-            throw throwable;
+-        }
+-
+-        if (bufferedwriter != null) {
+-            bufferedwriter.close();
+-        }
 +        };
 +        MCUtil.scheduleAsyncTask(saveTask);
 +        // PurpurAsync end - Akarin

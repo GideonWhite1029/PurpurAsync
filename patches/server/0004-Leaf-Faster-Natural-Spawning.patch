@@ -22,10 +22,10 @@ index 9c6f5b55b1f1376fa75e216cd366ee47c79fafc4..1ccd1833f422b6e99ccc6dd8610fcf9a
      static RandomSource createThreadSafe() {
          return new ThreadSafeLegacyRandomSource(RandomSupport.generateUniqueSeed());
 diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
-index 311c853f2150247350ab6ccb2dd92d58dbfc645c..3d0a2756cff79c3584fa398b9b547b9023190075 100644
+index eda2f8cc034cf46293be1be117a60cf8b663c303..076d1bafc6f6f1e33ea40adaf7475dfb59e31127 100644
 --- a/src/main/java/net/minecraft/world/level/Level.java
 +++ b/src/main/java/net/minecraft/world/level/Level.java
-@@ -129,6 +129,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+@@ -128,6 +128,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
      protected float oThunderLevel;
      public float thunderLevel;
      public final RandomSource random = RandomSource.create();
@@ -34,20 +34,20 @@ index 311c853f2150247350ab6ccb2dd92d58dbfc645c..3d0a2756cff79c3584fa398b9b547b90
      @Deprecated
      private final RandomSource threadSafeRandom = RandomSource.createThreadSafe();
 diff --git a/src/main/java/net/minecraft/world/level/NaturalSpawner.java b/src/main/java/net/minecraft/world/level/NaturalSpawner.java
-index a2026900948e9157cb35ba0183dc3af20c63214f..e345b90eb65e9aacd03fe78f3c3152d08215af63 100644
+index 0f90a6803851eba51e164772c984b1cd1193d882..443c1f89cdcfffa06a20a4d7bb5c1a4d3614b5bf 100644
 --- a/src/main/java/net/minecraft/world/level/NaturalSpawner.java
 +++ b/src/main/java/net/minecraft/world/level/NaturalSpawner.java
-@@ -427,10 +427,11 @@ public final class NaturalSpawner {
+@@ -410,10 +410,11 @@ public final class NaturalSpawner {
  
-     private static BlockPos getRandomPosWithin(ServerLevel world, LevelChunk chunk) { // Pufferfish - accept serverlevel
+     private static BlockPos getRandomPosWithin(Level world, LevelChunk chunk) {
          ChunkPos chunkcoordintpair = chunk.getPos();
--        int i = chunkcoordintpair.getMinBlockX() + world.getThreadUnsafeRandom().nextInt(16); // Pufferfish - use thread unsafe random
--        int j = chunkcoordintpair.getMinBlockZ() + world.getThreadUnsafeRandom().nextInt(16); // Pufferfish
+-        int i = chunkcoordintpair.getMinBlockX() + world.random.nextInt(16);
+-        int j = chunkcoordintpair.getMinBlockZ() + world.random.nextInt(16);
 +        // PurpurAsync start - Generate random seed faster
 +        int i = chunkcoordintpair.getMinBlockX() + world.randomFaster.nextInt(16);
 +        int j = chunkcoordintpair.getMinBlockZ() + world.randomFaster.nextInt(16);
          int k = chunk.getHeight(Heightmap.Types.WORLD_SURFACE, i, j) + 1;
--        int l = Mth.randomBetweenInclusive(world.getThreadUnsafeRandom(), world.getMinBuildHeight(), k); // Pufferfish
+-        int l = Mth.randomBetweenInclusive(world.random, world.getMinBuildHeight(), k);
 +        int l = Mth.randomBetweenInclusive(world.randomFaster, world.getMinBuildHeight(), k);  // PurpurAsync end
  
          return new BlockPos(i, l, j);
