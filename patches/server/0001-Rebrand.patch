@@ -79,7 +79,7 @@ index 19937ffa2c93cb75ea8dba58dd5a8214adc035fa..b30c0858fcd7cb67c8178bd1d20947ac
      private final String bukkitVersion = Versioning.getBukkitVersion();
      private final Logger logger = Logger.getLogger("Minecraft");
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-index 99597258e8e88cd9e2c901c4ac3ff7faeeabee2b..f910893c56e1abf28d17fb266a92a13828049bf7 100644
+index 99597258e8e88cd9e2c901c4ac3ff7faeeabee2b..431c94cc39e0d4cce59c44f67aabca2b49362f7a 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 @@ -11,7 +11,7 @@ public final class Versioning {
@@ -87,7 +87,7 @@ index 99597258e8e88cd9e2c901c4ac3ff7faeeabee2b..f910893c56e1abf28d17fb266a92a138
          String result = "Unknown-Version";
  
 -        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.purpurmc.purpur/purpur-api/pom.properties"); // Pufferfish // Purpur
-+        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/dev.gideonwhite1029.purpurasync/purpur-api/pom.properties"); // Pufferfish // Purpur // PurpurAsync
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/dev.gideonwhite1029.purpurasync/purpurasync-api/pom.properties"); // Pufferfish // Purpur // PurpurAsync
          Properties properties = new Properties();
  
          if (stream != null) {
