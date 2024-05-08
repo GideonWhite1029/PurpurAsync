@@ -64,10 +64,10 @@ index 3c1992e212a6d6f1db4d5b807b38d71913619fc0..de11ef56b071a7b09d41c05b49474e51
  
      @Override
 diff --git a/src/main/java/org/purpurmc/purpur/PurpurConfig.java b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
-index a2e629d479d8e38ed7d71370a4c3ae3a0c501334..856dd3c78d4500bd6072854732a6e8fde98c043a 100644
+index 6a96f517a6db7b67efb6189da98ea88ea8bb0049..e70f9e89dd11b201f214e7d594dc756a57c98683 100644
 --- a/src/main/java/org/purpurmc/purpur/PurpurConfig.java
 +++ b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
-@@ -606,4 +606,9 @@ public class PurpurConfig {
+@@ -618,4 +618,9 @@ public class PurpurConfig {
              MinecraftServer.LOGGER.info("Using {} threads for Async Pathfinding", asyncPathfindingMaxThreads);
          }
      }

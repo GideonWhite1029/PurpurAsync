@@ -1541,12 +1541,12 @@ index 6308822f819d7cb84c8070c8a7eec1a3f822114b..e49851557f991ca1fc2f78abfb819609
  
      public SwimNodeEvaluator(boolean canJumpOutOfWater) {
 diff --git a/src/main/java/org/purpurmc/purpur/PurpurConfig.java b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
-index 8ea168571da3e7f46f1b6727971a4943ec18465b..a2e629d479d8e38ed7d71370a4c3ae3a0c501334 100644
+index 40464988790ad74dc5c03724eff817b463e7b88b..6a96f517a6db7b67efb6189da98ea88ea8bb0049 100644
 --- a/src/main/java/org/purpurmc/purpur/PurpurConfig.java
 +++ b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
-@@ -586,4 +586,24 @@ public class PurpurConfig {
-     private static void registerMinecraftDebugCommands() {
-         registerMinecraftDebugCommands = getBoolean("settings.register-minecraft-debug-commands", registerMinecraftDebugCommands);
+@@ -598,4 +598,24 @@ public class PurpurConfig {
+             startupCommands.add(command);
+         });
      }
 +
 +    public static boolean asyncPathfindingEnabled = false;
