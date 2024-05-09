@@ -3,8 +3,8 @@
 ### PurpurAsync is a Purpur fork aimed at asynchronous behavior and multithreading with the ability to run all Bukkit plugins
 ## Features
 - **Async Pathfinding**
+- **Support Virtual-Thread**
 - **Multithreaded Tracker** (Soon)
-- **Virtual-Thread** (Soon in 1.20.5)
 - **Parallel World Ticking** (by [SparklyPaper](https://github.com/SparklyPower/SparklyPaper/blob/ver/1.20.4/patches/server/0018-Parallel-world-ticking.patch)) (Soon)
 ## Build
 To build a paperclip jar, you need to run the following command. You can find the jar in build/libs(Note: JDK17 or JDK21 is needed)
