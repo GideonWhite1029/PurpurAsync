@@ -52,4 +52,7 @@ manifest.mf
 run/
 
 build-data/
+PurpurAsync-API/
+PurpurAsync-Server/
+paper-api-generator/
 *.jar
