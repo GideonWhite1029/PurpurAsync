@@ -5,14 +5,31 @@ Subject: [PATCH] Information changed during startup
 
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index 70ef8f63ab79e102cb4326c21cc344488f4fbdd3..4e64143f8077fc7c9ae83a06215af4be7f3be68a 100644
+index 83b979fbb8c0dd64f0a19feef654af2b165bd603..e186e0c8a7be6cd38108ed4fc11553ad5343657a 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -127,7 +127,20 @@ public final class Bukkit {
-         if ("master".equals(gitBranch) || "main".equals(gitBranch)) {
-             branchMsg = "";  // Don't show branch on main/master
-         }
--        return "This server is running " + getName() + " version " + getVersion() + " (Implementing API version " + getBukkitVersion() + ") (Git: " + gitCommit + branchMsg + ")";
+@@ -14,6 +14,8 @@ import java.util.Set;
+ import java.util.UUID;
+ import java.util.function.Consumer;
+ import java.util.logging.Logger;
++
++import io.papermc.paper.util.JarManifests;
+ import org.bukkit.Warning.WarningState;
+ import org.bukkit.advancement.Advancement;
+ import org.bukkit.block.data.BlockData;
+@@ -119,8 +121,27 @@ public final class Bukkit {
+       */
+     @NotNull
+     public static String getVersionMessage() {
+-        final io.papermc.paper.ServerBuildInfo version = io.papermc.paper.ServerBuildInfo.buildInfo();
+-        return "This server is running " + getName() + " version " + version.asString(io.papermc.paper.ServerBuildInfo.StringRepresentation.VERSION_FULL) + " (Implementing API version " + getBukkitVersion() + ")";
++        final var manifest = JarManifests.manifest(Bukkit.getServer().getClass());
++        final String gitBranch = manifest == null ? null : manifest.getMainAttributes().getValue("Git-Branch");
++        final String gitCommit = manifest == null ? null : manifest.getMainAttributes().getValue("Git-Commit");
++        String branchMsg = " on " + gitBranch;
++        if ("master".equals(gitBranch) || "main".equals(gitBranch)) {
++            branchMsg = "";  // Don't show branch on main/master
++        }
 +        // PurpurAsync start
 +        return "\n" +
 +                "\u001B[38;5;123m      ___                         ___                    \n" +

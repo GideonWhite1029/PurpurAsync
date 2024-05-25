@@ -5,10 +5,10 @@ Subject: [PATCH] Leaf: Virtual Thread for async scheduler
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index a0a7bfe8f5a40b945b83096de1efd650adeb9ee3..aaa67505cdeb869171ada9324ff0fdbde5b527fb 100644
+index 6d8e9cf4ee496b8748654e792ce438f512c3d946..c78a7fd8afb1e1858e45018fee7a315db5bdab81 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
-@@ -367,7 +367,6 @@ public class Main {
+@@ -368,7 +368,6 @@ public class Main {
              tryPreloadClass("org.bukkit.craftbukkit.scheduler.CraftScheduler$1");
              tryPreloadClass("org.bukkit.craftbukkit.scheduler.CraftScheduler$2");
              tryPreloadClass("org.bukkit.craftbukkit.scheduler.CraftScheduler$3");
