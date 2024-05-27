@@ -1,0 +1,75 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: GideonWhite1029 <gideonwhite1029@gmail.com>
+Date: Sat, 25 May 2024 21:42:25 +0400
+Subject: [PATCH] SparklyPaper: Parallel world ticking
+
+
+diff --git a/src/main/java/co/aikar/timings/Timings.java b/src/main/java/co/aikar/timings/Timings.java
+index 752d54830aa8baa1450bf72da03ae55ed30293c2..1cac5a2f565298bec03ad715e9b9b4881173ba53 100644
+--- a/src/main/java/co/aikar/timings/Timings.java
++++ b/src/main/java/co/aikar/timings/Timings.java
+@@ -55,6 +55,7 @@ public final class Timings {
+     private static int historyInterval = -1;
+     private static int historyLength = -1;
+     private static boolean warnedAboutDeprecationOnEnable;
++    private static boolean warnedAboutParallelWorldTickingOnEnable; // SparklyPaper - parallel world ticking
+ 
+     private Timings() {}
+ 
+@@ -145,6 +146,12 @@ public final class Timings {
+      * @param enabled Should timings be reported
+      */
+     public static void setTimingsEnabled(boolean enabled) {
++        // SparklyPaper - parallel world ticking
++        if (enabled) {
++            warnAboutParallelWorldTickingOnEnable();
++            return;
++        }
++        // SparklyPaper end
+         // Purpur start - we don't do that here...
+         timingsEnabled = false;
+         //warnAboutDeprecationOnEnable();
+@@ -182,6 +189,30 @@ public final class Timings {
+             .build();
+     }
+ 
++    // SparklyPaper start - parallel world ticking
++    private static void warnAboutParallelWorldTickingOnEnable() {
++        if (!warnedAboutParallelWorldTickingOnEnable) {
++            Bukkit.getLogger().warning(PlainTextComponentSerializer.plainText().serialize(parallelWorldTickingMessage()));
++            warnedAboutParallelWorldTickingOnEnable = true;
++        }
++    }
++
++    public static Component parallelWorldTickingMessage() {
++        return Component.text()
++                .color(TextColor.color(0xf3ef91))
++                .append(Component.text("[!] The timings profiler attempted to be enabled, but was disabled because timings is not compatible with " + Bukkit.getName() + "'s Parallel World Ticking feature."))
++                .append(Component.newline())
++                .append(
++                        Component.text("    We recommend installing the spark profiler as a replacement: ")
++                                .append(
++                                        Component.text()
++                                                .content("https://spark.lucko.me/")
++                                                .clickEvent(ClickEvent.openUrl("https://spark.lucko.me/")))
++                )
++                .build();
++    }
++    // SparklyPaper end
++
+     /**
+      * <p>Sets whether or not the Timings should monitor at Verbose level.</p>
+      *
+diff --git a/src/main/java/org/bukkit/command/SimpleCommandMap.java b/src/main/java/org/bukkit/command/SimpleCommandMap.java
+index fdedac32544be6534288c8ba28abe7f5c4c56f3b..8078b86efa57d7e77e3824e0722c040220a83ad1 100644
+--- a/src/main/java/org/bukkit/command/SimpleCommandMap.java
++++ b/src/main/java/org/bukkit/command/SimpleCommandMap.java
+@@ -38,7 +38,7 @@ public class SimpleCommandMap implements CommandMap {
+         register("bukkit", new VersionCommand("version"));
+         register("bukkit", new ReloadCommand("reload"));
+         //register("bukkit", new PluginsCommand("plugins")); // Paper
+-        register("bukkit", new co.aikar.timings.TimingsCommand("timings")); // Paper
++        // register("bukkit", new co.aikar.timings.TimingsCommand("timings")); // Paper // SparklyPaper - parallel world ticking
+     }
+ 
+     public void setFallbackCommands() {

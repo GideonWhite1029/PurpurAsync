@@ -4,8 +4,11 @@
 ## Features
 - **Async Pathfinding**
 - **Support Virtual-Thread**
-- **Multithreaded Tracker** (Soon)
-- **Parallel World Ticking** (by [SparklyPaper](https://github.com/SparklyPower/SparklyPaper/blob/ver/1.20.4/patches/server/0018-Parallel-world-ticking.patch)) (Soon)
+- **Parallel World Ticking** (by [SparklyPaper](https://github.com/SparklyPower/SparklyPaper/blob/ver/1.20.4/patches/server/0018-Parallel-world-ticking.patch))
+
+> [!WARNING]
+> Before using this kernel, familiarize yourself with all the bugs introduced by changing the parallelism of worlds - [link](https://github.com/SparklyPower/SparklyPaper/blob/ver/1.20.4/docs/PARALLEL_WORLD_TICKING.md)
+
 ## Build
 To build a paperclip jar, you need to run the following command. You can find the jar in build/libs(Note: JDK17 or JDK21 is needed)
 

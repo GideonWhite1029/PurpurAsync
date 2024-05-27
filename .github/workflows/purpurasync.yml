@@ -48,6 +48,8 @@ jobs:
           body: |
             📦Version: `${{ env.mcversion }}` | Commit ${{ env.commit_id }} [![download](https://img.shields.io/github/downloads/GideonWhite1029/${{ env.project_id }}/${{ env.tag }}/total?color=0&style=flat-square)](https://github.com/GideonWhite1029/${{ env.project_id }}/download/${{ env.tag }}/${{ env.jar }})
             This release is automatically compiled by GitHub Actions
+            > [!WARNING]
+            > Before using this kernel, familiarize yourself with all the bugs introduced by changing the parallelism of worlds - [link](https://github.com/SparklyPower/SparklyPaper/blob/ver/1.20.4/docs/PARALLEL_WORLD_TICKING.md)
             ### Commit Message
             ${{ env.commit_msg }}
           artifacts: |
