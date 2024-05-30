@@ -5,7 +5,7 @@ Subject: [PATCH] Information changed during startup
 
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index 83b979fbb8c0dd64f0a19feef654af2b165bd603..e186e0c8a7be6cd38108ed4fc11553ad5343657a 100644
+index 83b979fbb8c0dd64f0a19feef654af2b165bd603..821d97de90ac63c8b8cd7c887f7ba77d50796770 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
 @@ -14,6 +14,8 @@ import java.util.Set;
@@ -17,7 +17,7 @@ index 83b979fbb8c0dd64f0a19feef654af2b165bd603..e186e0c8a7be6cd38108ed4fc11553ad
  import org.bukkit.Warning.WarningState;
  import org.bukkit.advancement.Advancement;
  import org.bukkit.block.data.BlockData;
-@@ -119,8 +121,27 @@ public final class Bukkit {
+@@ -119,8 +121,28 @@ public final class Bukkit {
        */
      @NotNull
      public static String getVersionMessage() {
@@ -41,7 +41,8 @@ index 83b979fbb8c0dd64f0a19feef654af2b165bd603..e186e0c8a7be6cd38108ed4fc11553ad
 +                "  \u001b[38;5;86m Server name: \u001B[0m" + getName() + "\n" +
 +                "  \u001b[38;5;86m Version: \u001B[0m" + getVersion() + "\n" +
 +                "  \u001b[38;5;86m API version: \u001B[0m" + getBukkitVersion() + "\n" +
-+                "  \u001b[38;5;86m Github commit: \u001B[0m" + gitCommit + "\n";
++                "  \u001b[38;5;86m Github commit: \u001B[0m" + gitCommit + "\n" +
++                "\n";
 +
 +        // PurpurAsync stop
          // Paper end
