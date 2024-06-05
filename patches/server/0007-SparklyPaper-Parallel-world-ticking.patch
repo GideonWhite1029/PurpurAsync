@@ -1026,7 +1026,7 @@ index b863f6fe65c796a1d3102cc3eddb5d6c5becd3ac..eb24c9ccd374b24807ad87ebfebf37d7
  
          entityplayer1.connection = entityplayer.connection;
 diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
-index 0c02fcbf76506bf2fc1ca2a16f361947ff6365b7..a4faa6b3974991d980e4ef7505ff162194738609 100644
+index 7c8a3a6af8d5fdbb2341fe4012686bfc4f79a312..d3f4290a9f481043046de16b48648d08d2a42be2 100644
 --- a/src/main/java/net/minecraft/world/entity/Entity.java
 +++ b/src/main/java/net/minecraft/world/entity/Entity.java
 @@ -470,7 +470,12 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
@@ -1897,7 +1897,7 @@ index b7ff7af2513204b151340538d50a65c850bdb75f..45f9b2594e449926d7f00f64bf12fef2
          // Paper end
      }
 diff --git a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
-index 04e77b85044403b8c594cd419eaa3a153ba42150..e6ebc472f55af5c9fa763a277610840a2cea1f15 100644
+index 5308dc55bcc334ad6bef927de6c2d9b9364d99ff..25f0b5d6ebaa8c6a01c4c80250ec808522aed67e 100644
 --- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 +++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 @@ -951,7 +951,7 @@ public class CraftEventFactory {
@@ -1918,7 +1918,7 @@ index 04e77b85044403b8c594cd419eaa3a153ba42150..e6ebc472f55af5c9fa763a277610840a
          Bukkit.getPluginManager().callEvent(event);
  
          if (!event.isCancelled()) {
-@@ -2150,7 +2150,7 @@ public class CraftEventFactory {
+@@ -2164,7 +2164,7 @@ public class CraftEventFactory {
          CraftItemStack craftItem = CraftItemStack.asCraftMirror(itemStack.copyWithCount(1));
  
          org.bukkit.event.block.BlockDispenseEvent event = new org.bukkit.event.block.BlockDispenseEvent(bukkitBlock, craftItem.clone(), CraftVector.toBukkit(to));
