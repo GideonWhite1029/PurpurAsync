@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="purpurasyncdoc"
+                 name="PurpurAsync Documentation"
+                 start-page="Main.md">
+
+    <toc-element topic="Main.md">
+        <toc-element topic="Configuration-Files.md"/>
+        <toc-element topic="Contributing.md"/>
+        <toc-element topic="Parallel-World-Ticking.md">
+            <toc-element topic="Parallel-Notes.md"/>
+            <toc-element topic="Parallel-Incompatible-Plugins.md"/>
+        </toc-element>
+    </toc-element>
+</instance-profile>
