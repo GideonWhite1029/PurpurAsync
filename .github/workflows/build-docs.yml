@@ -11,7 +11,7 @@ permissions:
 
 env:
   INSTANCE: 'documentation/purpurasyncdoc'
-  ARTIFACT: 'webHelpPURPURASYNCDOC2-all'
+  ARTIFACT: 'webHelpPURPURASYNCDOC2-all.zip'
   DOCKER_VERSION: '241.15989'
 
 jobs:
