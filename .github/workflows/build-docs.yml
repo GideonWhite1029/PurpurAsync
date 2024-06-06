@@ -29,7 +29,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Build docs using documentation Docker builder
+      - name: Build docs using Writerside Docker builder
         uses: JetBrains/writerside-github-action@v4
         with:
           instance: ${{ env.INSTANCE }}
@@ -43,6 +43,7 @@ jobs:
           path: |
             artifacts/${{ env.ARTIFACT }}
             artifacts/report.json
+            artifacts/${{ env.ALGOLIA_ARTIFACT }}
           retention-days: 7
   test:
     needs: build
@@ -85,7 +86,7 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
   publish-indexes:
-    needs: [ build, test, deploy ]
+    needs: [build, test, deploy]
     runs-on: ubuntu-latest
     container:
       image: registry.jetbrains.team/p/writerside/builder/algolia-publisher:2.0.32-3
