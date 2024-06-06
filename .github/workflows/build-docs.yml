@@ -13,7 +13,7 @@ env:
   INSTANCE: 'documentation/purpurasyncdoc'
   ARTIFACT: 'webHelpPURPURASYNCDOC2-all.zip'
   DOCKER_VERSION: '241.15989'
-  ALGOLIA_ARTIFACT: 'algolia-indexes-purpurasyncdoc.zip'
+  ALGOLIA_ARTIFACT: 'algolia-indexes-PURPURASYNCDOC.zip'
   ALGOLIA_APP_NAME: 'HTV291KDPJ'
   ALGOLIA_INDEX_NAME: 'prod_PurpurAsync'
   ALGOLIA_KEY: '${{ secrets.ALGOLIA_KEY }}'
