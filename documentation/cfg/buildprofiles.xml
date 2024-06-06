@@ -5,8 +5,20 @@
     <variables></variables>
     <build-profile instance="purpurasyncdoc">
         <variables>
+            <download-title>Get PurpurAsync</download-title>
+            <download-page>https://github.com/GideonWhite1029/PurpurAsync/releases/latest</download-page>
+            <showDownloadButton>true</showDownloadButton>
+            <custom-favicons>purpurasync.svg</custom-favicons>
+            <header-logo>purpurasync.svg</header-logo>
+            <product-web-url>https://github.com/GideonWhite1029/PurpurAsync</product-web-url>
+            <primary-color>forest</primary-color>
+            <color-preset>vivid</color-preset>
+            <offline-docs>true</offline-docs>
             <noindex-content>true</noindex-content>
         </variables>
+        <footer>
+            <link href="https://github.com/GideonWhite1029/PurpurAsync/issues">Report bugs</link>
+        </footer>
     </build-profile>
 
 </buildprofiles>

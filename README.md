@@ -1,3 +1,5 @@
+<img src="documentation/images/purpurasync.svg" alt="Logo" align="right" width="150">
+
 ## PurpurAsync
 
 ### PurpurAsync is a Purpur fork aimed at asynchronous behavior and multithreading with the ability to run all Bukkit plugins
