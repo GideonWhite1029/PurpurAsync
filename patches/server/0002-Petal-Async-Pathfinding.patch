@@ -1541,10 +1541,10 @@ index 6308822f819d7cb84c8070c8a7eec1a3f822114b..e49851557f991ca1fc2f78abfb819609
  
      public SwimNodeEvaluator(boolean canJumpOutOfWater) {
 diff --git a/src/main/java/org/purpurmc/purpur/PurpurConfig.java b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
-index 40464988790ad74dc5c03724eff817b463e7b88b..6a96f517a6db7b67efb6189da98ea88ea8bb0049 100644
+index 628329c982a8acaa8272d367c05c11b29b6cbafb..292eb4cbaaf5a13bfff30bd4f2e1ef50460f1b50 100644
 --- a/src/main/java/org/purpurmc/purpur/PurpurConfig.java
 +++ b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
-@@ -598,4 +598,24 @@ public class PurpurConfig {
+@@ -602,4 +602,24 @@ public class PurpurConfig {
              startupCommands.add(command);
          });
      }
