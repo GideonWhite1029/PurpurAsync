@@ -1271,10 +1271,10 @@ index ee8c232ddaa518377bdfa54e83ffc04f7a2f2c9a..04f64ca49d0699af2999c16d717f524f
      }
  }
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Drowned.java b/src/main/java/net/minecraft/world/entity/monster/Drowned.java
-index 15afee3c4f6307557321424560d2340e23cd472b..05ed15bcd5974af13395316b50f4ae78385f2ee4 100644
+index d1197b313f16f43f60ed242081a6164026e3c6a7..53c205f6ba3d63140a7d9c1f6cea1729326b2558 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Drowned.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Drowned.java
-@@ -296,7 +296,7 @@ public class Drowned extends Zombie implements RangedAttackMob {
+@@ -295,7 +295,7 @@ public class Drowned extends Zombie implements RangedAttackMob {
      protected boolean closeToNextPos() {
          Path pathentity = this.getNavigation().getPath();
  
