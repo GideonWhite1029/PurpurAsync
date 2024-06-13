@@ -5,7 +5,7 @@ Subject: [PATCH] SparklyPaper: Parallel world ticking
 
 
 diff --git a/src/main/java/co/aikar/timings/Timings.java b/src/main/java/co/aikar/timings/Timings.java
-index 752d54830aa8baa1450bf72da03ae55ed30293c2..1cac5a2f565298bec03ad715e9b9b4881173ba53 100644
+index 752d54830aa8baa1450bf72da03ae55ed30293c2..5220ec3b3fa622020ddacd3ec8dbe2fa46b66f8e 100644
 --- a/src/main/java/co/aikar/timings/Timings.java
 +++ b/src/main/java/co/aikar/timings/Timings.java
 @@ -55,6 +55,7 @@ public final class Timings {
@@ -29,7 +29,22 @@ index 752d54830aa8baa1450bf72da03ae55ed30293c2..1cac5a2f565298bec03ad715e9b9b488
          // Purpur start - we don't do that here...
          timingsEnabled = false;
          //warnAboutDeprecationOnEnable();
-@@ -182,6 +189,30 @@ public final class Timings {
+@@ -164,14 +171,6 @@ public final class Timings {
+             .color(TextColor.color(0xf3ef91))
+             .append(Component.text("[!] The timings profiler has been enabled but has been scheduled for removal from Paper in the future."))
+             .append(Component.newline())
+-            .append(
+-                Component.text("    We recommend installing the spark profiler as a replacement: ")
+-                    .append(
+-                        Component.text()
+-                            .content("https://spark.lucko.me/")
+-                            .clickEvent(ClickEvent.openUrl("https://spark.lucko.me/")))
+-            )
+-            .append(Component.newline())
+             .append(
+                 Component.text("    For more information please visit: ")
+                     .append(
+@@ -182,6 +181,22 @@ public final class Timings {
              .build();
      }
  
@@ -45,14 +60,6 @@ index 752d54830aa8baa1450bf72da03ae55ed30293c2..1cac5a2f565298bec03ad715e9b9b488
 +        return Component.text()
 +                .color(TextColor.color(0xf3ef91))
 +                .append(Component.text("[!] The timings profiler attempted to be enabled, but was disabled because timings is not compatible with " + Bukkit.getName() + "'s Parallel World Ticking feature."))
-+                .append(Component.newline())
-+                .append(
-+                        Component.text("    We recommend installing the spark profiler as a replacement: ")
-+                                .append(
-+                                        Component.text()
-+                                                .content("https://spark.lucko.me/")
-+                                                .clickEvent(ClickEvent.openUrl("https://spark.lucko.me/")))
-+                )
 +                .build();
 +    }
 +    // SparklyPaper end
