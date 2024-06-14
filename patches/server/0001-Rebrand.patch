@@ -106,10 +106,10 @@ index a6e5950b5875cafd734300cdfbf58f5d3736f3c8..5c721f3906bb1a73196c9285d5eeaa0f
              SharedConstants.getCurrentVersion().getName(),
              getManifestAttribute(manifest, ATTRIBUTE_BUILD_NUMBER)
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index f6b6d0d753e81d58cd21ba41d1e2f3e63267b743..28bf5ec718984333534c4ecb12da04294296b5c1 100644
+index 07a04dcbd48430102268f8f44e9bce437214a00f..fb1b851bd03e37ab2ed75cf65429af6415d8b082 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -264,7 +264,7 @@ import javax.annotation.Nullable; // Paper
+@@ -265,7 +265,7 @@ import javax.annotation.Nullable; // Paper
  import javax.annotation.Nonnull; // Paper
  
  public final class CraftServer implements Server {

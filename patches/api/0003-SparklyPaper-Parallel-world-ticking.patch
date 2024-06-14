@@ -68,10 +68,10 @@ index 752d54830aa8baa1450bf72da03ae55ed30293c2..5220ec3b3fa622020ddacd3ec8dbe2fa
       * <p>Sets whether or not the Timings should monitor at Verbose level.</p>
       *
 diff --git a/src/main/java/org/bukkit/command/SimpleCommandMap.java b/src/main/java/org/bukkit/command/SimpleCommandMap.java
-index fdedac32544be6534288c8ba28abe7f5c4c56f3b..8078b86efa57d7e77e3824e0722c040220a83ad1 100644
+index 7740ad53796d08584bb0110f99af5639993e4d71..99fa3586c3d929ecc82d980ec18f358e3c1e7039 100644
 --- a/src/main/java/org/bukkit/command/SimpleCommandMap.java
 +++ b/src/main/java/org/bukkit/command/SimpleCommandMap.java
-@@ -38,7 +38,7 @@ public class SimpleCommandMap implements CommandMap {
+@@ -39,7 +39,7 @@ public class SimpleCommandMap implements CommandMap {
          register("bukkit", new VersionCommand("version"));
          register("bukkit", new ReloadCommand("reload"));
          //register("bukkit", new PluginsCommand("plugins")); // Paper
