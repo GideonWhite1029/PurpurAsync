@@ -23,7 +23,7 @@ index 7107eabf02d9d9b69d97c978ba421ad52031ec3f..13d6048dad1779d6e5cf93239c2eb70f
       * Gets the {@code ServerBuildInfo}.
       *
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index bb09c468ab1261ea4eaf59012d30a2e45199caf7..7c51bc4d10b8745be23aa9cb632e67e69570c542 100644
+index 0430e8238609336a4fa0bd220a7c44f6af264945..414f836cfe02cc7974935f026698d5307c1bb15d 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
 @@ -14,6 +14,8 @@ import java.util.Set;
@@ -35,7 +35,7 @@ index bb09c468ab1261ea4eaf59012d30a2e45199caf7..7c51bc4d10b8745be23aa9cb632e67e6
  import org.bukkit.Warning.WarningState;
  import org.bukkit.advancement.Advancement;
  import org.bukkit.block.data.BlockData;
-@@ -119,8 +121,28 @@ public final class Bukkit {
+@@ -120,8 +122,28 @@ public final class Bukkit {
        */
      @NotNull
      public static String getVersionMessage() {

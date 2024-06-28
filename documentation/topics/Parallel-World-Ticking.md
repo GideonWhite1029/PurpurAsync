@@ -72,7 +72,7 @@ We use a single thread per world instead of a thread pool to be easier to track 
 
 ### Disabled/Broken Features
 * Parallel World Ticking does not work with Aikar's Timings because Timings wasn't really meant for asynchronous stuff, so the Timings stack becomes corrupted when the worlds are ticked and the server crashes, please use Spark instead!
-* Non-player entities cannot cross a Nether/End Portal. (**Fixed in PurpurAsync**)
+* Non-player entities cannot cross a Nether/End Portal.
 
 ## Implementation Notes
 

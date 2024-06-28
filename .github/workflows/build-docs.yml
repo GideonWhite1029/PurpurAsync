@@ -2,7 +2,7 @@ name: Build documentation
 
 on:
   push:
-    branches: ["ver/1.20.6"]
+    branches: ["ver/1.21"]
   workflow_dispatch:
 
 permissions:
@@ -18,7 +18,7 @@ env:
   ALGOLIA_INDEX_NAME: 'prod_PurpurAsync'
   ALGOLIA_KEY: '${{ secrets.ALGOLIA_KEY }}'
   CONFIG_JSON_PRODUCT: 'purpurasyncdoc'
-  CONFIG_JSON_VERSION: '1.20.6'
+  CONFIG_JSON_VERSION: '1.21'
 
 jobs:
   build:
