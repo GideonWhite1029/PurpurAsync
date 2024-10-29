@@ -534,7 +534,7 @@ index cb308808906a8cdb127df8284e106e00553473ca..323d41e2bed5e83a26dfe4c88dfce7ed
              }
  
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index bbaea9608aa7f0ef12d84119cf276295595036e5..b6595a0dd624c4c65425051182c491dbc091b986 100644
+index bbaea9608aa7f0ef12d84119cf276295595036e5..e73c5b2a6c16ecb45f47f8336d114d84d54cbdf6 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -326,6 +326,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -655,6 +655,14 @@ index bbaea9608aa7f0ef12d84119cf276295595036e5..b6595a0dd624c4c65425051182c491db
          this.isIteratingOverLevels = false; // Paper - Throw exception on world create while being ticked
  
          //this.profiler.popPush("connection"); // Purpur
+@@ -1963,6 +1977,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+         Map<ResourceKey<Level>, ServerLevel> oldLevels = this.levels;
+         Map<ResourceKey<Level>, ServerLevel> newLevels = Maps.newLinkedHashMap(oldLevels);
+         newLevels.remove(level.dimension());
++        level.tickExecutor.shutdown(); // SparklyPaper - parallel world ticking (We remove it in here instead of ServerLevel.close() because ServerLevel.close() is never called!)
+         this.levels = Collections.unmodifiableMap(newLevels);
+     }
+     // CraftBukkit end
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 index 6e6f4dffceb0032153c5be119303c5809629cfcc..4b8011cf56d503bc5573399c0bdea7a903a311d1 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
@@ -690,7 +698,7 @@ index ebe872c4643038f0c99b289d4d5afdbedd76c6ef..5682a1334cedae18a024b6d60f0ba060
                              // Paper end - rewrite chunk system
                          }
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 551f2b2fc8f8830f35bb88045b30bee20424d2b1..a92433cf9d96420a8ce88278f044526500ae3f11 100644
+index 551f2b2fc8f8830f35bb88045b30bee20424d2b1..3b1a951a352b30e0873b0b27544e4d120443e3cb 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
 @@ -224,6 +224,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ca.spottedleaf.
@@ -753,14 +761,6 @@ index 551f2b2fc8f8830f35bb88045b30bee20424d2b1..a92433cf9d96420a8ce88278f0445265
          entity.generation = false; // Paper - Don't fire sync event during generation; Reset flag if it was added during a ServerLevel generation process
          // Paper start - extra debug info
          if (entity.valid) {
-@@ -2511,6 +2514,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ca.spottedleaf.
-     public void close() throws IOException {
-         super.close();
-         // Paper - rewrite chunk system
-+        tickExecutor.shutdown(); // SparklyPaper - parallel world ticking
-     }
- 
-     @Override
 diff --git a/src/main/java/net/minecraft/server/level/ServerPlayer.java b/src/main/java/net/minecraft/server/level/ServerPlayer.java
 index 4f72ce384f4c0dbae98effa89aed5c3bb802e635..7ba71483086d21e45be44e956987ace33c0859a4 100644
 --- a/src/main/java/net/minecraft/server/level/ServerPlayer.java
@@ -1336,7 +1336,7 @@ index 022fae208dc858917c4c63b6274e4f6423bc5bb2..54b55df9de6f7cc86ab01215a03e2c90
          for (ServerLevel world : this.console.getAllLevels()) {
              // world.serverLevelData.setDifficulty(config.difficulty); // Paper - per level difficulty
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-index 0921894dbc0d81b943827ecda6e6befdbfd715f5..785aaa05190639b29ab61f693780b2aeda7e1f43 100644
+index 0921894dbc0d81b943827ecda6e6befdbfd715f5..c5a1db4c7b18aef5d31a4f83f827f2480ef83cc6 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
 @@ -474,7 +474,7 @@ public class CraftWorld extends CraftRegionAccessor implements World {
