@@ -52,10 +52,10 @@ index 3c1992e212a6d6f1db4d5b807b38d71913619fc0..de11ef56b071a7b09d41c05b49474e51
  
      @Override
 diff --git a/src/main/java/org/purpurmc/purpur/PurpurConfig.java b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
-index 481a35b01587831d991d0db0f762729583cc8569..82bc6b36d5ec5ae30730e2c1cdd1c402d6c57f24 100644
+index 1d06919eb96a4ddfa07c6506dbe57919682d9cc6..9c1260bab9e35fd834025354d20051c781452eb4 100644
 --- a/src/main/java/org/purpurmc/purpur/PurpurConfig.java
 +++ b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
-@@ -617,4 +617,9 @@ public class PurpurConfig {
+@@ -624,4 +624,10 @@ public class PurpurConfig {
              MinecraftServer.LOGGER.info("Using {} threads for Async Pathfinding", asyncPathfindingMaxThreads);
          }
      }
@@ -64,4 +64,5 @@ index 481a35b01587831d991d0db0f762729583cc8569..82bc6b36d5ec5ae30730e2c1cdd1c402
 +    private static void useVirtualThreadforAsyncScheduler() {
 +        useVirtualThreadforAsyncScheduler = getBoolean("settings.purpurasync.use-virtual-thread-for-async-scheduler", useVirtualThreadforAsyncScheduler);
 +    }
++
  }

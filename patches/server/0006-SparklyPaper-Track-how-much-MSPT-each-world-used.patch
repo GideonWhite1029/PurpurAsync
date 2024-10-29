@@ -56,10 +56,10 @@ index 8b5293b0c696ef21d0101493ffa41b60bf0bc86b..72a88207ed0bd8730dbd357b7aa9387e
      }
  
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index e6a23507b69a128aabf4f811d6099281b24583fd..c1bd106dd5b3ebf6ef9596388dc3c38ec988c702 100644
+index d78cb68c3a53b277aa26186062efc716c8f80f36..bbaea9608aa7f0ef12d84119cf276295595036e5 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1829,7 +1829,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1848,7 +1848,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
              try {
                  //worldserver.timings.doTick.startTiming(); // Spigot // Purpur
@@ -77,12 +77,12 @@ index e6a23507b69a128aabf4f811d6099281b24583fd..c1bd106dd5b3ebf6ef9596388dc3c38e
              } catch (Throwable throwable) {
                  CrashReport crashreport = CrashReport.forThrowable(throwable, "Exception ticking world");
 diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
-index 72f529cbe455377c2a2b4938693fa7858fc2ce9c..b2599abe9d7d9e1016ad39387cf04ff46f3347a5 100644
+index 067b10134b087626e05596225744b905211e8b63..551f2b2fc8f8830f35bb88045b30bee20424d2b1 100644
 --- a/src/main/java/net/minecraft/server/level/ServerLevel.java
 +++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
-@@ -516,6 +516,12 @@ public class ServerLevel extends Level implements WorldGenLevel, ca.spottedleaf.
+@@ -500,6 +500,12 @@ public class ServerLevel extends Level implements WorldGenLevel, ca.spottedleaf.
      }
-     // Paper end - rewrite chunk system
+     // Paper end - lag compensation
  
 +    // SparklyPaper start - track world's MSPT
 +    public final MinecraftServer.TickTimes tickTimes5s = new MinecraftServer.TickTimes(100);

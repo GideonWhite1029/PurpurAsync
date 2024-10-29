@@ -477,7 +477,7 @@ index 0000000000000000000000000000000000000000..bf68483928208ae48141c5fb723a2c3f
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/world/entity/ai/behavior/AcquirePoi.java b/src/main/java/net/minecraft/world/entity/ai/behavior/AcquirePoi.java
-index 2638c5502016da62c54ec02a1d62834cba8e69d3..44af281d0aed99e65f239194e7764fb987d274e5 100644
+index ecd1bbd17cb0134cf1f4e99a3fea9e205d38f46b..77fab5cf549e041880a55ef9ae353940006e7262 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/behavior/AcquirePoi.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/behavior/AcquirePoi.java
 @@ -1,6 +1,7 @@
@@ -497,9 +497,9 @@ index 2638c5502016da62c54ec02a1d62834cba8e69d3..44af281d0aed99e65f239194e7764fb9
  public class AcquirePoi {
      public static final int SCAN_RANGE = 48;
 @@ -76,23 +78,56 @@ public class AcquirePoi {
-                                         )
-                                         .limit(5L)
-                                         .collect(Collectors.toSet());
+                                     io.papermc.paper.util.PoiAccess.findNearestPoiPositions(poiManager, poiPredicate, predicate2, entity.blockPosition(), world.purpurConfig.villagerAcquirePoiSearchRadius, world.purpurConfig.villagerAcquirePoiSearchRadius*world.purpurConfig.villagerAcquirePoiSearchRadius, PoiManager.Occupancy.HAS_SPACE, false, 5, poiposes); // Purpur
+                                     Set<Pair<Holder<PoiType>, BlockPos>> set = new java.util.HashSet<>(poiposes);
+                                     // Paper end - optimise POI access
 -                                    Path path = findPathToPois(entity, set);
 -                                    if (path != null && path.canReach()) {
 -                                        BlockPos blockPos = path.getTarget();
@@ -1125,7 +1125,7 @@ index ce7398a617abe6e800c1e014b3ac5c970eb15c8a..c552cabed8986e8a92ae927a2114f3ea
  
      @Override
 diff --git a/src/main/java/net/minecraft/world/entity/ai/sensing/NearestBedSensor.java b/src/main/java/net/minecraft/world/entity/ai/sensing/NearestBedSensor.java
-index 222c87e80cb089867ce9a7d2dceebe21b4bfe0de..bd02115f96db41b60467e3952ac673687b30b69f 100644
+index 9104d7010bda6f9f73b478c11490ef9c53f76da2..58453c30ef518646d9059a55c3a784798486807e 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/sensing/NearestBedSensor.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/sensing/NearestBedSensor.java
 @@ -2,6 +2,7 @@ package net.minecraft.world.entity.ai.sensing;
@@ -1144,19 +1144,13 @@ index 222c87e80cb089867ce9a7d2dceebe21b4bfe0de..bd02115f96db41b60467e3952ac67368
  
  public class NearestBedSensor extends Sensor<Mob> {
      private static final int CACHE_TIMEOUT = 40;
-@@ -57,16 +59,36 @@ public class NearestBedSensor extends Sensor<Mob> {
-                     holder -> holder.is(PoiTypes.HOME), predicate, entity.blockPosition(), world.purpurConfig.villagerNearestBedSensorSearchRadius, PoiManager.Occupancy.ANY
-                 )
-                 .collect(Collectors.toSet());
--            Path path = AcquirePoi.findPathToPois(entity, set);
--            if (path != null && path.canReach()) {
--                BlockPos blockPos = path.getTarget();
--                Optional<Holder<PoiType>> optional = poiManager.getType(blockPos);
--                if (optional.isPresent()) {
--                    entity.getBrain().setMemory(MemoryModuleType.NEAREST_BED, blockPos);
+@@ -57,6 +59,25 @@ public class NearestBedSensor extends Sensor<Mob> {
+             java.util.List<Pair<Holder<PoiType>, BlockPos>> poiposes = new java.util.ArrayList<>();
+             // don't ask me why it's unbounded. ask mojang.
+             io.papermc.paper.util.PoiAccess.findAnyPoiPositions(poiManager, type -> type.is(PoiTypes.HOME), predicate, entity.blockPosition(), world.purpurConfig.villagerNearestBedSensorSearchRadius, PoiManager.Occupancy.ANY, false, Integer.MAX_VALUE, poiposes); // Purpur
 +            // Kaiiju start - await on async path processing
 +            if (PurpurConfig.asyncPathfindingEnabled) {
-+                Path possiblePath = AcquirePoi.findPathToPois(entity, set);
++                Path possiblePath = AcquirePoi.findPathToPois(entity, new java.util.HashSet<>(poiposes));
 +                dev.gideonwhite1029.purpurasync.path.AsyncPathProcessor.awaitProcessing(entity, possiblePath, path -> {
 +                    // read canReach check
 +                    if ((path == null || !path.canReach()) && this.triedCount < 5) {
@@ -1173,19 +1167,13 @@ index 222c87e80cb089867ce9a7d2dceebe21b4bfe0de..bd02115f96db41b60467e3952ac67368
 +                });
 +            } else {
 +                // Kaiiju end
-+                Path path = AcquirePoi.findPathToPois(entity, set);
-+                if (path != null && path.canReach()) {
-+                    BlockPos blockPos = path.getTarget();
-+                    Optional<Holder<PoiType>> optional = poiManager.getType(blockPos);
-+                    if (optional.isPresent()) {
-+                        entity.getBrain().setMemory(MemoryModuleType.NEAREST_BED, blockPos);
-+                    }
-+                } else if (this.triedCount < 5) {
-+                    this.batchCache.long2LongEntrySet().removeIf(entry -> entry.getLongValue() < this.lastUpdate);
-                 }
--            } else if (this.triedCount < 5) {
--                this.batchCache.long2LongEntrySet().removeIf(entry -> entry.getLongValue() < this.lastUpdate);
--            }
+             Path path = AcquirePoi.findPathToPois(entity, new java.util.HashSet<>(poiposes));
+             // Paper end - optimise POI access
+             if (path != null && path.canReach()) {
+@@ -68,6 +89,7 @@ public class NearestBedSensor extends Sensor<Mob> {
+             } else if (this.triedCount < 5) {
+                 this.batchCache.long2LongEntrySet().removeIf(entry -> entry.getLongValue() < this.lastUpdate);
+             }
 +            } // Kaiiju - async path processing
          }
      }
@@ -1213,7 +1201,7 @@ index 9a6ec5e465684be7f0d54b1f7e66bdf52603e442..1022ba7c522cc72cdbd73f7f98657072
          }
      }
 diff --git a/src/main/java/net/minecraft/world/entity/animal/frog/Frog.java b/src/main/java/net/minecraft/world/entity/animal/frog/Frog.java
-index ee8c232ddaa518377bdfa54e83ffc04f7a2f2c9a..04f64ca49d0699af2999c16d717f524f62407983 100644
+index 4c861b18fbfbae3cb2f1e3563393cfcf4005591c..bd9bf6bd4c32caf3eea1d4149d74d4b7388c1209 100644
 --- a/src/main/java/net/minecraft/world/entity/animal/frog/Frog.java
 +++ b/src/main/java/net/minecraft/world/entity/animal/frog/Frog.java
 @@ -6,6 +6,9 @@ import java.util.Objects;
@@ -1234,7 +1222,7 @@ index ee8c232ddaa518377bdfa54e83ffc04f7a2f2c9a..04f64ca49d0699af2999c16d717f524f
  
  public class Frog extends Animal implements VariantHolder<Holder<FrogVariant>> {
      protected static final ImmutableList<SensorType<? extends Sensor<? super Frog>>> SENSOR_TYPES = ImmutableList.of(
-@@ -468,6 +472,17 @@ public class Frog extends Animal implements VariantHolder<Holder<FrogVariant>> {
+@@ -469,6 +473,17 @@ public class Frog extends Animal implements VariantHolder<Holder<FrogVariant>> {
              super(frog, world);
          }
  
@@ -1252,7 +1240,7 @@ index ee8c232ddaa518377bdfa54e83ffc04f7a2f2c9a..04f64ca49d0699af2999c16d717f524f
          @Override
          public boolean canCutCorner(PathType nodeType) {
              return nodeType != PathType.WATER_BORDER && super.canCutCorner(nodeType);
-@@ -477,7 +492,12 @@ public class Frog extends Animal implements VariantHolder<Holder<FrogVariant>> {
+@@ -478,7 +493,12 @@ public class Frog extends Animal implements VariantHolder<Holder<FrogVariant>> {
          protected PathFinder createPathFinder(int range) {
              this.nodeEvaluator = new Frog.FrogNodeEvaluator(true);
              this.nodeEvaluator.setCanPassDoors(true);
@@ -1331,7 +1319,7 @@ index 70650cc6f76bed79a31a9e8c86205910994a920f..df49cf52322d70fc12267cba643ff554
  
          @Override
 diff --git a/src/main/java/net/minecraft/world/entity/monster/warden/Warden.java b/src/main/java/net/minecraft/world/entity/monster/warden/Warden.java
-index 6ee394c1616db9b0203b3e52e39234d064438654..012bc185e6be3d68dcf6e67b5fdf2cfe6fca0a09 100644
+index 8e24cd9ed03e2f11da6f4fb2dd58dd9b9e5d7a06..6816a7b8016c53fab9c5d0cdcae41c8f861025df 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/warden/Warden.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/warden/Warden.java
 @@ -72,6 +72,7 @@ import net.minecraft.world.level.pathfinder.PathType;
@@ -1342,7 +1330,7 @@ index 6ee394c1616db9b0203b3e52e39234d064438654..012bc185e6be3d68dcf6e67b5fdf2cfe
  import org.slf4j.Logger;
  
  public class Warden extends Monster implements VibrationSystem {
-@@ -615,12 +616,22 @@ public class Warden extends Monster implements VibrationSystem {
+@@ -617,12 +618,22 @@ public class Warden extends Monster implements VibrationSystem {
              protected PathFinder createPathFinder(int range) {
                  this.nodeEvaluator = new WalkNodeEvaluator();
                  this.nodeEvaluator.setCanPassDoors(true);
@@ -1537,10 +1525,10 @@ index 6308822f819d7cb84c8070c8a7eec1a3f822114b..e49851557f991ca1fc2f78abfb819609
  
      public SwimNodeEvaluator(boolean canJumpOutOfWater) {
 diff --git a/src/main/java/org/purpurmc/purpur/PurpurConfig.java b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
-index 4ba89978e12ac28fd19552cc7de858799f0eb79f..481a35b01587831d991d0db0f762729583cc8569 100644
+index a5f9869947937fe0a8c47f8b90969c6f811e3b29..1d06919eb96a4ddfa07c6506dbe57919682d9cc6 100644
 --- a/src/main/java/org/purpurmc/purpur/PurpurConfig.java
 +++ b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
-@@ -597,4 +597,24 @@ public class PurpurConfig {
+@@ -604,4 +604,24 @@ public class PurpurConfig {
              startupCommands.add(command);
          });
      }

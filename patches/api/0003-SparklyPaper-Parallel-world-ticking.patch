@@ -5,7 +5,7 @@ Subject: [PATCH] SparklyPaper: Parallel world ticking
 
 
 diff --git a/src/main/java/co/aikar/timings/Timings.java b/src/main/java/co/aikar/timings/Timings.java
-index 752d54830aa8baa1450bf72da03ae55ed30293c2..5220ec3b3fa622020ddacd3ec8dbe2fa46b66f8e 100644
+index 3d663104c8e3089abdb9dc4d7309f873ac182e98..a242cab2346a4b4b41f378d576bcfc8d50ff177b 100644
 --- a/src/main/java/co/aikar/timings/Timings.java
 +++ b/src/main/java/co/aikar/timings/Timings.java
 @@ -55,6 +55,7 @@ public final class Timings {
@@ -29,22 +29,16 @@ index 752d54830aa8baa1450bf72da03ae55ed30293c2..5220ec3b3fa622020ddacd3ec8dbe2fa
          // Purpur start - we don't do that here...
          timingsEnabled = false;
          //warnAboutDeprecationOnEnable();
-@@ -164,14 +171,6 @@ public final class Timings {
-             .color(TextColor.color(0xf3ef91))
+@@ -164,8 +171,6 @@ public final class Timings {
+             .color(TextColor.color(0xffc93a))
              .append(Component.text("[!] The timings profiler has been enabled but has been scheduled for removal from Paper in the future."))
              .append(Component.newline())
--            .append(
--                Component.text("    We recommend installing the spark profiler as a replacement: ")
--                    .append(
--                        Component.text()
--                            .content("https://spark.lucko.me/")
--                            .clickEvent(ClickEvent.openUrl("https://spark.lucko.me/")))
--            )
+-            .append(Component.text("    We recommend migrating to the spark profiler."))
 -            .append(Component.newline())
              .append(
                  Component.text("    For more information please visit: ")
                      .append(
-@@ -182,6 +181,22 @@ public final class Timings {
+@@ -176,6 +181,22 @@ public final class Timings {
              .build();
      }
  

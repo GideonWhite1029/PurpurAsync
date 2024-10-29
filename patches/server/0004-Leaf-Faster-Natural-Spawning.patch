@@ -22,10 +22,10 @@ index 9c6f5b55b1f1376fa75e216cd366ee47c79fafc4..1ccd1833f422b6e99ccc6dd8610fcf9a
      static RandomSource createThreadSafe() {
          return new ThreadSafeLegacyRandomSource(RandomSupport.generateUniqueSeed());
 diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
-index a5dab1252bec8f0ba5e40313e329731c559945f3..33341b6e509709737d7c1a45b47c38540081881e 100644
+index 5057d9d433ba002a22d22adfaf7323b2cfaee9af..08b5be2cc7600b4be6e75e31dc738d019ee8efe8 100644
 --- a/src/main/java/net/minecraft/world/level/Level.java
 +++ b/src/main/java/net/minecraft/world/level/Level.java
-@@ -129,6 +129,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
+@@ -130,6 +130,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
      protected float oThunderLevel;
      public float thunderLevel;
      public final RandomSource random = RandomSource.create();
@@ -34,7 +34,7 @@ index a5dab1252bec8f0ba5e40313e329731c559945f3..33341b6e509709737d7c1a45b47c3854
      @Deprecated
      private final RandomSource threadSafeRandom = RandomSource.createThreadSafe();
 diff --git a/src/main/java/net/minecraft/world/level/NaturalSpawner.java b/src/main/java/net/minecraft/world/level/NaturalSpawner.java
-index 0f90a6803851eba51e164772c984b1cd1193d882..443c1f89cdcfffa06a20a4d7bb5c1a4d3614b5bf 100644
+index 061706ee732f9809d6b73305c14871257af8305e..3fac3f6ae1412dc047298c1751a3dd560783a545 100644
 --- a/src/main/java/net/minecraft/world/level/NaturalSpawner.java
 +++ b/src/main/java/net/minecraft/world/level/NaturalSpawner.java
 @@ -410,10 +410,11 @@ public final class NaturalSpawner {

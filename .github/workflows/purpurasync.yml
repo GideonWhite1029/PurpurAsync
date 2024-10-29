@@ -2,9 +2,9 @@ name: PurpurAsync CI
 
 on:
   push:
-    branches: [ "ver/1.21" ]
+    branches: [ "ver/1.21.1" ]
   pull_request:
-    branches: [ "ver/1.21" ]
+    branches: [ "ver/1.21.1" ]
 
 permissions: write-all
 

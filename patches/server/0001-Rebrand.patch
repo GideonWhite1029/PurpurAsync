@@ -5,35 +5,35 @@ Subject: [PATCH] Rebrand
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 42fa7df2badca3fe26258ce0db934ba33f9cec80..8bbdaf0d411661c6282161a7e8bc1195f50007f3 100644
+index 535b0c6a750cc77fb9340d6e080932f3eb3bde17..6f509740403efe392a80278777c1ee20810644a5 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -13,7 +13,7 @@ configurations.named(log4jPlugins.compileClasspathConfigurationName) {
  val alsoShade: Configuration by configurations.creating
  
  dependencies {
--    implementation(project(":purpur-api")) // Purpur
-+    implementation(project(":purpurasync-api")) // Purpur // PurpurAsync
+-    implementation(project(":purpur-api")) // Pufferfish // Paper // Purpur
++    implementation(project(":purpurasync-api")) // Pufferfish // Paper // Purpur // PurpurAsync
      // Paper start
      implementation("org.jline:jline-terminal-jansi:3.21.0")
      implementation("net.minecrell:terminalconsoleappender:1.3.0")
-@@ -84,14 +84,14 @@ tasks.jar {
+@@ -104,14 +104,14 @@ tasks.jar {
          val gitBranch = git("rev-parse", "--abbrev-ref", "HEAD").getText().trim() // Paper
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
--            "Implementation-Title" to "Purpur", // Purpur
-+            "Implementation-Title" to "PurpurAsync", // Purpur // PurpurAsync
+-            "Implementation-Title" to "Purpur", // Pufferfish // Purpur
++            "Implementation-Title" to "PurpurAsync", // Pufferfish // Purpur // PurpurAsync
              "Implementation-Version" to implementationVersion,
              "Implementation-Vendor" to date, // Paper
--            "Specification-Title" to "Purpur", // Purpur
-+            "Specification-Title" to "PurpurAsync", // Purpur // PurpurAsync
+-            "Specification-Title" to "Purpur", // Pufferfish // Purpur
++            "Specification-Title" to "PurpurAsync", // Pufferfish // Purpur // PurpurAsync
              "Specification-Version" to project.version,
--            "Specification-Vendor" to "Purpur Team", // Purpur
--            "Brand-Id" to "purpurmc:purpur", // Purpur
--            "Brand-Name" to "Purpur", // Purpur
-+            "Specification-Vendor" to "GideonWhite1029", // Purpur // PurpurAsync
-+            "Brand-Id" to "gideonwhite1029:purpurasync", // Purpur // PurpurAsync
-+            "Brand-Name" to "PurpurAsync", // Purpur // PurpurAsync
+-            "Specification-Vendor" to "Purpur Team", // Pufferfish // Purpur
+-            "Brand-Id" to "purpurmc:purpur", // Pufferfish // Purpur
+-            "Brand-Name" to "Purpur", // Pufferfish // Purpur
++            "Specification-Vendor" to "GideonWhite1029", // Pufferfish // Purpur // PurpurAsync
++            "Brand-Id" to "gideonwhite1029:purpurasync", // Pufferfish // Purpur // PurpurAsync
++            "Brand-Name" to "PurpurAsync", // Pufferfish // Purpur // PurpurAsync
              "Build-Number" to (build ?: ""),
              "Build-Time" to Instant.now().toString(),
              "Git-Branch" to gitBranch, // Paper
@@ -82,18 +82,18 @@ index 6d36fc6d8e22d9b68dea3830f6ecc8763184c343..45214920e368a8169f9c77f9068a3f4b
          final @Nullable Component history = this.getHistory();
  
 diff --git a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
-index a6e5950b5875cafd734300cdfbf58f5d3736f3c8..5c721f3906bb1a73196c9285d5eeaa0fc874225b 100644
+index 3099c21ee589acf6edff5903a23673adf489024f..ae14ce21b3184ffff1f84fe89ef2db0b0e52893e 100644
 --- a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
 +++ b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
-@@ -32,6 +32,7 @@ public record ServerBuildInfoImpl(
- 
+@@ -33,6 +33,7 @@ public record ServerBuildInfoImpl(
      private static final String BRAND_PAPER_NAME = "Paper";
+     private static final String BRAND_PUFFERFISH_NAME = "Pufferfish"; // Purpur
      private static final String BRAND_PURPUR_NAME = "Purpur"; // Purpur
 +    private static final String BRAND_PURPURASYNC_NAME = "PurpurAsync"; // PurpurAsync
  
      private static final String BUILD_DEV = "DEV";
  
-@@ -43,9 +44,9 @@ public record ServerBuildInfoImpl(
+@@ -44,9 +45,9 @@ public record ServerBuildInfoImpl(
          this(
              getManifestAttribute(manifest, ATTRIBUTE_BRAND_ID)
                  .map(Key::key)
@@ -106,7 +106,7 @@ index a6e5950b5875cafd734300cdfbf58f5d3736f3c8..5c721f3906bb1a73196c9285d5eeaa0f
              SharedConstants.getCurrentVersion().getName(),
              getManifestAttribute(manifest, ATTRIBUTE_BUILD_NUMBER)
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 002a3ee08d7e009ef1e4bd3bc274aa608846b219..99ae68d211d804167a7dfac7834e7fbdd70e439e 100644
+index 8854e3adca98214697fdfa7f1296e2d66b5afa48..022fae208dc858917c4c63b6274e4f6423bc5bb2 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -266,7 +266,7 @@ import javax.annotation.Nullable; // Paper
@@ -132,7 +132,7 @@ index 99597258e8e88cd9e2c901c4ac3ff7faeeabee2b..431c94cc39e0d4cce59c44f67aabca2b
  
          if (stream != null) {
 diff --git a/src/main/java/org/purpurmc/purpur/PurpurConfig.java b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
-index 54abd6874a64c669fc22448849febc9ef7c0f95e..4ba89978e12ac28fd19552cc7de858799f0eb79f 100644
+index 546d920198acc2a7aea6e251a34d92d33cbaaee7..a5f9869947937fe0a8c47f8b90969c6f811e3b29 100644
 --- a/src/main/java/org/purpurmc/purpur/PurpurConfig.java
 +++ b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
 @@ -233,7 +233,7 @@ public class PurpurConfig {

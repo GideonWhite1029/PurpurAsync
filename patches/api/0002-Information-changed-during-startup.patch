@@ -5,10 +5,10 @@ Subject: [PATCH] Information changed during startup
 
 
 diff --git a/src/main/java/io/papermc/paper/ServerBuildInfo.java b/src/main/java/io/papermc/paper/ServerBuildInfo.java
-index 7107eabf02d9d9b69d97c978ba421ad52031ec3f..13d6048dad1779d6e5cf93239c2eb70f9bcb6abc 100644
+index 7196594e07af19a14c320d77df893978525fe386..9b02bc432bcd3fd89bb676693350ac0b17f83511 100644
 --- a/src/main/java/io/papermc/paper/ServerBuildInfo.java
 +++ b/src/main/java/io/papermc/paper/ServerBuildInfo.java
-@@ -25,6 +25,13 @@ public interface ServerBuildInfo {
+@@ -33,6 +33,13 @@ public interface ServerBuildInfo {
      Key BRAND_PURPUR_ID = Key.key("purpurmc", "purpur");
      // Purpur end
  
@@ -23,7 +23,7 @@ index 7107eabf02d9d9b69d97c978ba421ad52031ec3f..13d6048dad1779d6e5cf93239c2eb70f
       * Gets the {@code ServerBuildInfo}.
       *
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index 0430e8238609336a4fa0bd220a7c44f6af264945..414f836cfe02cc7974935f026698d5307c1bb15d 100644
+index 3a71f8fe73a2309f57cb06dedf204d3e37b46b03..0e2746869dedc1ab43ab1507cb1d3e62e5669707 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
 @@ -14,6 +14,8 @@ import java.util.Set;
